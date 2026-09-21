@@ -1,0 +1,82 @@
+[
+  {
+    "id": "digital_arrest_001",
+    "category": "digital_arrest",
+    "label": "Fake CBI/Police Threat",
+    "example_text": "This is a final warning from CBI. Your Aadhaar is linked to a money laundering case. Call 9876543210 immediately or an arrest warrant will be issued.",
+    "behavioral_signature": {
+      "urgency": true,
+      "authority_impersonation": "police",
+      "payment_request": false,
+      "credential_request": true,
+      "external_link": false,
+      "reward_bait": false
+    },
+    "explanation": "Official authorities like the CBI or Police never threaten arrest over SMS or WhatsApp, nor do they demand immediate calls to personal mobile numbers.",
+    "source": "I4C Advisory"
+  },
+  {
+    "id": "digital_arrest_002",
+    "category": "digital_arrest",
+    "label": "Fake Customs/FedEx Alert",
+    "example_text": "FedEx: Your parcel containing illegal items has been intercepted by customs. Press 1 to speak to our agent or legal action will be taken.",
+    "behavioral_signature": {
+      "urgency": true,
+      "authority_impersonation": "courier",
+      "payment_request": false,
+      "credential_request": false,
+      "external_link": false,
+      "reward_bait": false
+    },
+    "explanation": "Couriers do not involve police over the phone for 'illegal items'. This is a common setup for a 'Digital Arrest' scam.",
+    "source": "1930 Helpline"
+  },
+  {
+    "id": "fake_kyc_001",
+    "category": "fake_kyc",
+    "label": "SBI KYC Expiry",
+    "example_text": "Dear customer, your SBI YONO account will be blocked today due to pending KYC. Update immediately using this link: http://sbi-update-kyc.top",
+    "behavioral_signature": {
+      "urgency": true,
+      "authority_impersonation": "bank",
+      "payment_request": false,
+      "credential_request": true,
+      "external_link": true,
+      "reward_bait": false
+    },
+    "explanation": "Banks never threaten to block your account on the same day via SMS with a non-official web link.",
+    "source": "Cybercrime.gov.in"
+  },
+  {
+    "id": "utility_payment_001",
+    "category": "utility_payment",
+    "label": "Electricity Disconnection",
+    "example_text": "Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM from the electricity office because your previous month bill was not updated. Please contact our electricity officer on 9123456789.",
+    "behavioral_signature": {
+      "urgency": true,
+      "authority_impersonation": "utility",
+      "payment_request": true,
+      "credential_request": false,
+      "external_link": false,
+      "reward_bait": false
+    },
+    "explanation": "Utility companies send formal notices for overdue bills. They do not send SMS warnings to contact a random mobile number on the same night.",
+    "source": "News Reports"
+  },
+  {
+    "id": "qr_trick_001",
+    "category": "qr_payment",
+    "label": "Receive Money QR",
+    "example_text": "Please scan this QR code on PhonePe/GPay to receive your OLX advance payment of ₹5,000.",
+    "behavioral_signature": {
+      "urgency": false,
+      "authority_impersonation": "none",
+      "payment_request": true,
+      "credential_request": true,
+      "external_link": true,
+      "reward_bait": true
+    },
+    "explanation": "You NEVER have to scan a QR code or enter your UPI PIN to RECEIVE money. Doing so will debit money from your account.",
+    "source": "UPI Guidelines"
+  }
+]

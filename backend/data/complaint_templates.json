@@ -1,0 +1,3 @@
+{
+  "general": "To: Cyber Crime Cell\n\nSubject: Report of Cyber Fraud via {payment_method}\n\nDear Sir/Madam,\n\nI am writing to report a cyber fraud incident where I lost ₹{amount_paid} on {date}.\n\nDetails of the incident:\n{scam_description}\n\nMy Details:\nName: {name}\nPhone: {phone}\nEmail: {email}\n\nI have attached the relevant screenshots and evidence.\n\nPlease help me recover my funds.\n\nSincerely,\n{name}"
+}
