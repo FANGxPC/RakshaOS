@@ -26,6 +26,7 @@ class LLMClient:
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.1, # Low temperature for more deterministic output
+                    tools=[{"google_search": {}}], # REAL WORLD DATA: Ground analysis in live Google Search results
                 ),
             )
             
@@ -50,3 +51,21 @@ class LLMClient:
             "recommended_action": "Verify the sender through official channels before proceeding.",
             "scam_type": "unknown"
         }
+
+    async def generate_text(self, prompt: str) -> str:
+        """Generates plain text response using Gemini"""
+        if not self.client:
+            return "Error: GEMINI_API_KEY is not set. Could not generate text."
+            
+        try:
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.3,
+                ),
+            )
+            return response.text
+        except Exception as e:
+            logger.error(f"LLM text generation failed: {str(e)}")
+            return f"An error occurred while generating text: {str(e)}"

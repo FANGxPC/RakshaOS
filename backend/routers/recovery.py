@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List, Optional
 
-from ..services.response.complaint_generator import ComplaintGenerator
+from ..services.reasoning.complaint_generator import ComplaintGenerator
 
 router = APIRouter()
 
@@ -20,9 +20,9 @@ class RecoveryRequest(BaseModel):
 
 @router.post("/recovery")
 async def handle_recovery(request: RecoveryRequest):
-    # Generate draft
+    # Generate dynamic AI draft
     gen = ComplaintGenerator()
-    draft = gen.generate(request.model_dump())
+    draft = await gen.generate(request.model_dump())
     
     # Static checklist and steps
     checklist = [

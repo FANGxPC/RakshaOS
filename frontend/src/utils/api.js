@@ -1,4 +1,12 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+// Ensure we dynamically detect the host so mobile devices can hit the backend
+const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    return `http://${window.location.hostname}:8000/api`;
+  }
+  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export async function analyzeInput(inputType, content) {
   try {

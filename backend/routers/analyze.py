@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from typing import Optional
 import json
+import os
+import httpx
 from datetime import datetime, timezone
 
 from ..services.perception.ocr_service import OCRService
@@ -118,6 +120,28 @@ async def analyze_input(request: AnalyzeRequest, req: Request):
             app_state.event_history = app_state.event_history[-100:]
         
         await app_state.manager.broadcast(event)
+        
+        # 5. Family Shield (Telegram Alert)
+        if app_state.family_shield_enabled and final_result.get("verdict") in ("HIGH_RISK", "EMERGENCY"):
+            bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
+            chat_id = os.getenv("TELEGRAM_CHAT_ID")
+            if bot_token and chat_id:
+                try:
+                    alert_msg = (
+                        f"🚨 *FAMILY SHIELD ALERT* 🚨\n\n"
+                        f"RakshaOS detected an {final_result.get('verdict')} threat on your family member's device.\n"
+                        f"Channel: {request.channel}\n"
+                        f"Threat: {final_result.get('scam_type', 'Unknown')}\n"
+                        f"Action Taken: Warned user.\n\n"
+                        f"Please check on them immediately."
+                    )
+                    async with httpx.AsyncClient() as client:
+                        await client.post(
+                            f"https://api.telegram.org/bot{bot_token}/sendMessage",
+                            json={"chat_id": chat_id, "text": alert_msg, "parse_mode": "Markdown"}
+                        )
+                except Exception as e:
+                    print(f"Failed to send Family Shield alert: {e}")
         
         return final_result
         

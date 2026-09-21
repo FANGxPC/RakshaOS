@@ -31,6 +31,7 @@ export default function Home() {
   const [showManualInput, setShowManualInput] = useState(false);
   const [manualText, setManualText] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
+  const [familyShield, setFamilyShield] = useState(false);
   const wsRef = useRef(null);
   const feedRef = useRef(null);
   const audioCtxRef = useRef(null);
@@ -38,7 +39,8 @@ export default function Home() {
   // ─── WebSocket Connection ────────────────────────────────
   useEffect(() => {
     function connect() {
-      const ws = new WebSocket('ws://localhost:8000/ws');
+      const host = window.location.hostname || 'localhost';
+      const ws = new WebSocket(`ws://${host}:8000/ws`);
       wsRef.current = ws;
 
       ws.onopen = () => {
@@ -47,26 +49,42 @@ export default function Home() {
       };
 
       ws.onmessage = (event) => {
-        const msg = JSON.parse(event.data);
-
-        if (msg.type === 'init') {
-          setChannels(msg.channels || {});
-          setStats(msg.stats || {});
-          setEvents(msg.recent_events || []);
-        }
-
-        if (msg.type === 'new_analysis') {
-          setEvents(prev => [msg.data, ...prev].slice(0, 50));
-          setStats(msg.stats || {});
-
-          // Play sound for dangerous verdicts
-          if (msg.data.verdict === 'HIGH_RISK' || msg.data.verdict === 'EMERGENCY') {
-            playAlertSound(msg.data.verdict === 'EMERGENCY');
+        if (event.data === 'pong') return;
+        
+        try {
+          const msg = JSON.parse(event.data);
+          
+          if (msg.type === 'init') {
+            setChannels(msg.channels || {});
+            setStats(msg.stats || {});
+            setEvents(msg.recent_events || []);
           }
-        }
 
-        if (msg.type === 'channel_update') {
-          setChannels(msg.channels || {});
+          if (msg.type === 'new_analysis') {
+            setEvents(prev => [msg.data, ...prev].slice(0, 50));
+            setStats(msg.stats || {});
+
+            // Play sound for dangerous verdicts
+            if (msg.data.verdict === 'HIGH_RISK' || msg.data.verdict === 'EMERGENCY') {
+              playAlertSound(msg.data.verdict === 'EMERGENCY');
+              
+              // Text-to-Speech Alert
+              if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(
+                  `Warning. ${msg.data.verdict.replace('_', ' ')} detected on ${msg.data.channel || 'unknown channel'}.`
+                );
+                utterance.rate = 1.1;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+              }
+            }
+          }
+
+          if (msg.type === 'channel_update') {
+            setChannels(msg.channels || {});
+          }
+        } catch (e) {
+          console.error("WebSocket parsing error:", e);
         }
       };
 
@@ -114,7 +132,8 @@ export default function Home() {
     if (!manualText.trim()) return;
     setAnalyzing(true);
     try {
-      await fetch('http://localhost:8000/api/analyze', {
+      const host = window.location.hostname || 'localhost';
+      await fetch(`http://${host}:8000/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input_type: 'text', content: manualText, channel: 'web' })
@@ -123,6 +142,20 @@ export default function Home() {
       setShowManualInput(false);
     } catch (e) { console.error(e); }
     setAnalyzing(false);
+  };
+
+  // ─── Family Shield Toggle ────────────────────────────────
+  const toggleFamilyShield = async () => {
+    const newState = !familyShield;
+    setFamilyShield(newState);
+    try {
+      const host = window.location.hostname || 'localhost';
+      await fetch(`http://${host}:8000/api/family-shield`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: newState })
+      });
+    } catch (e) { console.error('Failed to toggle Family Shield', e); }
   };
 
   // ─── Threat Category Counter ─────────────────────────────
@@ -247,6 +280,26 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            {/* Family Shield */}
+            <div className={`glass-card p-5 border ${familyShield ? 'border-blue-500/50 bg-blue-500/10' : 'border-gray-800'}`}>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-2">
+                  <span>👨‍👩‍👧</span> Family Shield
+                </h3>
+                <button 
+                  onClick={toggleFamilyShield}
+                  className={`w-10 h-5 rounded-full relative transition-colors ${familyShield ? 'bg-blue-500' : 'bg-gray-600'}`}
+                >
+                  <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-all ${familyShield ? 'left-5' : 'left-1'}`}></div>
+                </button>
+              </div>
+              <p className="text-xs text-gray-400">
+                {familyShield 
+                  ? 'Active: Emergency alerts will be forwarded to your trusted contact via Telegram.' 
+                  : 'Inactive: Turn on to auto-alert family members during emergencies.'}
+              </p>
+            </div>
           </div>
 
           {/* ── Main Feed: Live Threat Feed ───────────────── */}

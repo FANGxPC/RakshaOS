@@ -64,6 +64,7 @@ app.state.manager = manager
 app.state.event_history = event_history
 app.state.channel_status = channel_status
 app.state.stats = stats
+app.state.family_shield_enabled = False
 
 # ─── WebSocket Endpoint ─────────────────────────────────────
 @app.websocket("/ws")
@@ -113,6 +114,12 @@ async def update_channel_status(data: dict):
             "channels": channel_status
         })
     return {"ok": True}
+
+@app.post("/api/family-shield")
+async def toggle_family_shield(data: dict):
+    enabled = data.get("enabled", False)
+    app.state.family_shield_enabled = enabled
+    return {"ok": True, "family_shield_enabled": enabled}
 
 app.include_router(analyze.router, prefix="/api")
 app.include_router(recovery.router, prefix="/api")
