@@ -114,3 +114,4 @@ build/
 *.pem
 *.key
 *.secret
+whatsapp-monitor/.wwebjs_auth/

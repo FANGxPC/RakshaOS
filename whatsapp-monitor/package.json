@@ -1,0 +1,17 @@
+{
+  "name": "rakshaos-whatsapp-monitor",
+  "version": "1.0.0",
+  "description": "RakshaOS WhatsApp Auto-Monitor — real-time scam detection layer",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "whatsapp-web.js": "^1.26.0",
+    "qrcode-terminal": "^0.12.0",
+    "axios": "^1.7.0"
+  },
+  "allowScripts": {
+    "puppeteer@24.38.0": true
+  }
+}
