@@ -3,10 +3,38 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import analyze, recovery
 import json
 import asyncio
+import os
+import threading
+import logging
 from datetime import datetime
 from typing import List
+from contextlib import asynccontextmanager
 
-app = FastAPI(title="RakshaOS API", version="2.0.0")
+logger = logging.getLogger(__name__)
+
+# ─── Telegram Bot Background Thread ─────────────────────────
+def _start_telegram_bot_thread():
+    """Launch the Telegram bot in a daemon thread if token is configured."""
+    token = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    if not token:
+        logger.info("ℹ️  TELEGRAM_BOT_TOKEN not set — Telegram bot will not start.")
+        return
+    try:
+        from .services.telegram_bot import run_telegram_bot
+        thread = threading.Thread(target=run_telegram_bot, daemon=True, name="telegram-bot")
+        thread.start()
+        logger.info("🤖 Telegram bot started in background thread.")
+    except Exception as e:
+        logger.warning(f"⚠️  Could not start Telegram bot: {e}")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    _start_telegram_bot_thread()
+    yield
+    # Shutdown — daemon thread auto-dies
+
+app = FastAPI(title="RakshaOS API", version="2.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

@@ -3,7 +3,8 @@
 RakshaOS Android Monitor — Termux-based SMS, Notification & Clipboard Scanner
 Requires: Termux + Termux:API app installed on Android
 Install: pkg install termux-api python
-Run: python monitor.py
+Run locally: python monitor.py
+Run from phone to laptop: export RAKSHAOS_API_URL="http://<LAPTOP_IP>:8000/api" && python monitor.py
 """
 
 import subprocess
@@ -20,6 +21,10 @@ except ImportError:
     import requests
 
 API_BASE = os.getenv("RAKSHAOS_API_URL", "http://localhost:8000/api")
+if "localhost" in API_BASE or "127.0.0.1" in API_BASE:
+    print("⚠️  WARNING: Using localhost for API_BASE. If you are running this on an Android phone,")
+    print("it will fail to reach your laptop. Export RAKSHAOS_API_URL with your laptop's IP address!")
+    print("Example: export RAKSHAOS_API_URL=\"http://192.168.1.5:8000/api\"\n")
 TELEGRAM_ALERT_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 POLL_INTERVAL = 3  # seconds
 

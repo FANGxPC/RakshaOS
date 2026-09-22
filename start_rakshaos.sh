@@ -2,14 +2,16 @@
 # RakshaOS - One-Button Launcher
 set -e
 
-echo "==============================================="
-echo "🛡️  RakshaOS - Live Command Center Setup"
-echo "==============================================="
+echo ""
+echo "  ╔══════════════════════════════════════════╗"
+echo "  ║  🛡️  RakshaOS — AI Digital Safety Layer  ║"
+echo "  ╚══════════════════════════════════════════╝"
+echo ""
 
-# 0. Register the shutdown trap FIRST before starting any children
-trap 'echo -e "\n🛑 Shutting down RakshaOS... (Cleaning up ports 3000 and 8000)"; kill 0' SIGINT SIGTERM
+# 0. Register the shutdown trap FIRST
+trap 'echo -e "\n🛑 Shutting down RakshaOS..."; kill 0' SIGINT SIGTERM
 
-# 1. Check for API Keys
+# 1. Check for .env
 if [ ! -f .env ]; then
     echo "⚠️  .env file not found. Creating one..."
     echo "GEMINI_API_KEY=" > .env
@@ -24,44 +26,34 @@ set +a
 
 if [ -z "$GEMINI_API_KEY" ]; then
     echo "❌ ERROR: GEMINI_API_KEY is missing in your .env file."
-    echo "RakshaOS requires a real Gemini API Key for its Scam Genome Engine."
-    echo "Please add it to the .env file and run this script again."
+    echo "   Add your Gemini API key to .env and try again."
     exit 1
 fi
 
-if [ -z "$TELEGRAM_CHAT_ID" ] || [ -z "$TELEGRAM_BOT_TOKEN" ]; then
-    echo "⚠️  WARNING: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing."
-    echo "The Family Shield will not send real Telegram alerts."
-    echo "Add them to .env if you want the Family Shield to work live!"
-fi
+echo "✅ API keys loaded."
 
-echo "✅ Environment configured."
-
-# 2. Start Backend
-echo "🚀 Starting Python AI Backend (FastAPI)..."
+# 2. Start Backend (Telegram bot auto-starts inside if token is set)
+echo "🚀 Starting AI Backend..."
 source venv/bin/activate
 uvicorn backend.main:app --host 0.0.0.0 --port 8000 &
 sleep 3
 
 # 3. Start Frontend
-echo "🚀 Starting Next.js Live Command Center..."
+echo "🚀 Starting Command Center..."
 (cd frontend && npm run dev -- -p 3000) &
 sleep 2
 
-# 4. Optional: Start WhatsApp Sidecar
 echo ""
-read -p "📱 Start WhatsApp Auto-Monitor for live demo? (y/n): " start_wa
-if [[ "$start_wa" == "y" || "$start_wa" == "Y" ]]; then
-    echo "🚀 Starting WhatsApp Sidecar..."
-    (cd whatsapp-monitor && npm start) &
-fi
-
+echo "  ╔══════════════════════════════════════════════════════╗"
+echo "  ║  ✅  RakshaOS is LIVE!                               ║"
+echo "  ║                                                      ║"
+echo "  ║  💻 Command Center:  http://localhost:3000            ║"
+echo "  ║  📱 AVD Companion:   http://10.0.2.2:3000/android    ║"
+echo "  ║  🤖 Telegram Bot:    Auto-started (if token set)     ║"
+echo "  ║                                                      ║"
+echo "  ║  Press Ctrl+C to shut down all systems.              ║"
+echo "  ╚══════════════════════════════════════════════════════╝"
 echo ""
-echo "==============================================="
-echo "✅ RakshaOS is LIVE!"
-echo "🌐 Command Center Dashboard: http://localhost:3000"
-echo "==============================================="
-echo "Press Ctrl+C to shut down all systems."
 
 # Wait for all background processes
 wait
