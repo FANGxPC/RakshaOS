@@ -41,7 +41,7 @@ export default function RiskCard({ result }) {
 
         {/* Explanation */}
         <div className="mt-12 bg-black/30 rounded-xl p-6 border border-white/5">
-          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">The "Why" Engine</h3>
+          <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">The &quot;Why&quot; Engine</h3>
           <p className="text-lg text-gray-200 leading-relaxed font-medium">
             {explanation}
           </p>

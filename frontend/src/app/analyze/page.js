@@ -12,7 +12,7 @@ export default function AnalyzePage() {
             Scan for Safety
           </h1>
           <p className="text-gray-400 max-w-xl mx-auto">
-            Paste a suspicious message, upload a screenshot, or scan a QR code. RakshaOS will analyze the intent and tell you if it's safe.
+            Paste a suspicious message, upload a screenshot, or scan a QR code. RakshaOS will analyze the intent and tell you if it&apos;s safe.
           </p>
         </div>
 

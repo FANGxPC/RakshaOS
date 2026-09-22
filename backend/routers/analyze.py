@@ -45,6 +45,10 @@ async def analyze_input(request: AnalyzeRequest, req: Request):
                 raise HTTPException(status_code=400, detail="Could not extract URLs from QR code")
         else:
             raise HTTPException(status_code=400, detail="Invalid input_type")
+            
+        # Protect against oversized payloads
+        if raw_text and len(raw_text) > 10000:
+            raw_text = raw_text[:10000]
         
         norm_result = TextNormalizer.normalize(raw_text)
         cleaned_text = norm_result["cleaned_text"]
@@ -118,6 +122,11 @@ async def analyze_input(request: AnalyzeRequest, req: Request):
         # Keep only last 100 events
         if len(app_state.event_history) > 100:
             app_state.event_history = app_state.event_history[-100:]
+        
+        # Quarantine malicious URLs
+        if final_result.get("verdict") in ("HIGH_RISK", "EMERGENCY"):
+            for url in all_urls:
+                app_state.quarantine_list.add(url)
         
         await app_state.manager.broadcast(event)
         

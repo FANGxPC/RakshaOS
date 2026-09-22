@@ -36,6 +36,23 @@ export default function Home() {
   const feedRef = useRef(null);
   const audioCtxRef = useRef(null);
 
+  // ─── Sound Alerts ────────────────────────────────────────
+  const playAlertSound = useCallback((isEmergency) => {
+    try {
+      if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = audioCtxRef.current;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = isEmergency ? 880 : 660;
+      osc.type = 'sine';
+      gain.gain.value = 0.3;
+      osc.start();
+      osc.stop(ctx.currentTime + (isEmergency ? 0.8 : 0.4));
+    } catch (e) { /* Audio context may not be available */ }
+  }, []);
+
   // ─── WebSocket Connection ────────────────────────────────
   useEffect(() => {
     function connect() {
@@ -98,34 +115,7 @@ export default function Home() {
 
     connect();
     return () => wsRef.current?.close();
-  }, []);
-
-  // ─── Keepalive Ping ──────────────────────────────────────
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send('ping');
-      }
-    }, 25000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // ─── Sound Alerts ────────────────────────────────────────
-  const playAlertSound = useCallback((isEmergency) => {
-    try {
-      if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      const ctx = audioCtxRef.current;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = isEmergency ? 880 : 660;
-      osc.type = 'sine';
-      gain.gain.value = 0.3;
-      osc.start();
-      osc.stop(ctx.currentTime + (isEmergency ? 0.8 : 0.4));
-    } catch (e) { /* Audio context may not be available */ }
-  }, []);
+  }, [playAlertSound]);
 
   // ─── Manual Analysis ─────────────────────────────────────
   const handleManualAnalyze = async () => {
@@ -171,9 +161,28 @@ export default function Home() {
   const activeChannelCount = Object.values(channels).filter(Boolean).length;
   const totalChannels = Object.keys(channels).length || 7;
 
+  // ─── Keepalive Ping & Time Updater ───────────────────────
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const wsInterval = setInterval(() => {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send('ping');
+      }
+    }, 25000);
+    
+    const timerInterval = setInterval(() => {
+      setNow(Date.now());
+    }, 60000);
+    
+    return () => {
+      clearInterval(wsInterval);
+      clearInterval(timerInterval);
+    };
+  }, []);
+
   const timeAgo = (ts) => {
     if (!ts) return '';
-    const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+    const diff = Math.floor((now - new Date(ts).getTime()) / 1000);
     if (diff < 5) return 'just now';
     if (diff < 60) return `${diff}s ago`;
     if (diff < 3600) return `${Math.floor(diff/60)}m ago`;

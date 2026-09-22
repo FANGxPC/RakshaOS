@@ -135,3 +135,11 @@ process.on('SIGINT', async () => {
     await client.destroy();
     process.exit(0);
 });
+
+process.on('uncaughtException', (err) => {
+    console.error('Unhandled Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});

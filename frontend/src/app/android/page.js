@@ -1,8 +1,9 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const CHANNELS = [
   { id: 'sms', icon: '💬', label: 'SMS', placeholder: 'Type or paste SMS message here...' },
+  { id: 'call', icon: '🎙️', label: 'Live Call', placeholder: 'Speak to simulate call...' },
   { id: 'whatsapp', icon: '📱', label: 'WhatsApp', placeholder: 'Paste forwarded WhatsApp message...' },
   { id: 'clipboard', icon: '📋', label: 'Clipboard', placeholder: 'Paste copied URL or text...' },
   { id: 'upi', icon: '💳', label: 'UPI', placeholder: 'Paste UPI link (upi://pay?...)' },
@@ -16,9 +17,61 @@ export default function AndroidCompanion() {
   const [sent, setSent] = useState(false);
   const [shieldActive, setShieldActive] = useState(true);
   const [scanCount, setScanCount] = useState(0);
+  const [isListening, setIsListening] = useState(false);
   const textareaRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const channel = CHANNELS.find(c => c.id === activeChannel);
+
+  // Initialize SpeechRecognition
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        
+        recognition.onresult = (event) => {
+          let currentTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            currentTranscript += event.results[i][0].transcript;
+          }
+          setText(prev => {
+            // Avoid duplicate appends by only taking final results or just updating the latest
+            // For simplicity, we just use the final result of this event chunk
+            return currentTranscript.trim();
+          });
+        };
+
+        recognition.onerror = (event) => {
+          console.error('Speech recognition error', event.error);
+          setIsListening(false);
+        };
+        
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+
+        recognitionRef.current = recognition;
+      }
+    }
+  }, []);
+
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      // Auto-send after a brief pause
+      if (text.trim()) {
+         setTimeout(handleSend, 1000);
+      }
+    } else {
+      setText('');
+      recognitionRef.current?.start();
+      setIsListening(true);
+    }
+  };
 
   const handleSend = async () => {
     if (!text.trim() || sending) return;
@@ -140,55 +193,90 @@ export default function AndroidCompanion() {
 
       {/* ─── Input Area ─── */}
       <div className="flex-1 px-4 flex flex-col">
-        <div className="flex-1 relative">
-          <textarea
-            ref={textareaRef}
-            value={text}
-            onChange={e => setText(e.target.value)}
-            placeholder={channel?.placeholder}
-            className="w-full h-full min-h-[160px] bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-gray-200 placeholder-gray-600 focus:border-blue-500/50 focus:bg-white/[0.07] outline-none resize-none transition-all"
-          />
-          {sent && (
-            <div className="absolute inset-0 flex items-center justify-center bg-green-500/10 rounded-2xl border border-green-500/30 animate-in fade-in zoom-in duration-200">
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
+        {activeChannel === 'call' ? (
+          <div className="flex-1 flex flex-col items-center justify-center bg-white/5 border border-white/10 rounded-2xl p-6 text-center transition-all">
+             <div className="mb-6">
+                <div className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-red-500/20 animate-pulse shadow-[0_0_30px_rgba(239,68,68,0.4)]' : 'bg-gray-800'}`}>
+                   <button onClick={toggleListening} className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${isListening ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'}`}>
+                      <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         {isListening ? (
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> 
+                         ) : (
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                         )}
+                      </svg>
+                   </button>
                 </div>
-                <span className="text-green-400 text-sm font-semibold">Sent to RakshaOS</span>
-                <span className="text-green-400/60 text-xs">Check Command Center for results</span>
+             </div>
+             <h3 className="text-lg font-semibold text-white mb-2">{isListening ? 'Listening to Call...' : 'Simulate Scam Call'}</h3>
+             <p className="text-sm text-gray-400 mb-4">{isListening ? 'Speak into your microphone.' : 'Tap the mic and roleplay a scammer.'}</p>
+             
+             {text && (
+                <div className="w-full bg-black/40 rounded-xl p-4 text-left border border-white/10 max-h-[120px] overflow-y-auto">
+                   <p className="text-sm text-gray-200 italic">"{text}"</p>
+                </div>
+             )}
+             
+             {sent && (
+               <div className="mt-4 px-4 py-2 bg-green-500/20 text-green-400 rounded-lg text-sm flex items-center gap-2">
+                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                 Audio analyzed and sent to Command Center
+               </div>
+             )}
+          </div>
+        ) : (
+          <div className="flex-1 relative">
+            <textarea
+              ref={textareaRef}
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder={channel?.placeholder}
+              className="w-full h-full min-h-[160px] bg-white/5 border border-white/10 rounded-2xl p-4 text-sm text-gray-200 placeholder-gray-600 focus:border-blue-500/50 focus:bg-white/[0.07] outline-none resize-none transition-all"
+            />
+            {sent && (
+              <div className="absolute inset-0 flex items-center justify-center bg-green-500/10 rounded-2xl border border-green-500/30 animate-in fade-in zoom-in duration-200">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <span className="text-green-400 text-sm font-semibold">Sent to RakshaOS</span>
+                  <span className="text-green-400/60 text-xs">Check Command Center for results</span>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         {/* ─── Action Button ─── */}
-        <div className="py-4">
-          <button
-            onClick={handleSend}
-            disabled={!text.trim() || sending}
-            className={`w-full py-3.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
-              text.trim() && !sending
-                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 active:scale-[0.98]'
-                : 'bg-white/5 text-gray-600 cursor-not-allowed'
-            }`}
-          >
-            {sending ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Scanning...
-              </>
-            ) : (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                Scan with RakshaOS
-              </>
-            )}
-          </button>
-        </div>
+        {activeChannel !== 'call' && (
+          <div className="py-4">
+            <button
+              onClick={handleSend}
+              disabled={!text.trim() || sending}
+              className={`w-full py-3.5 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all ${
+                text.trim() && !sending
+                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25 active:scale-[0.98]'
+                  : 'bg-white/5 text-gray-600 cursor-not-allowed'
+              }`}
+            >
+              {sending ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Scanning...
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Scan with RakshaOS
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ─── Bottom Nav (Android style) ─── */}

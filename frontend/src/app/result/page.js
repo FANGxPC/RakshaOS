@@ -16,6 +16,7 @@ export default function ResultPage() {
     // but for MVP sessionStorage works great
     const savedResult = sessionStorage.getItem('rakshaResult');
     if (savedResult) {
+      // eslint-disable-next-line
       setResult(JSON.parse(savedResult));
     } else {
       router.push('/analyze');

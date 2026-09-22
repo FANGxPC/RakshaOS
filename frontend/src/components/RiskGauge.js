@@ -21,6 +21,7 @@ export default function RiskGauge({ score, verdict }) {
     }
 
     return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [score]);
 
   // Determine colors based on verdict

@@ -1,5 +1,5 @@
 #!/bin/bash
-# RakshaOS - One-Button Launcher
+# RakshaOS - Auto-Interceptor Launcher
 set -e
 
 echo ""
@@ -9,7 +9,7 @@ echo "  ╚═══════════════════════
 echo ""
 
 # 0. Register the shutdown trap FIRST
-trap 'echo -e "\n🛑 Shutting down RakshaOS..."; kill 0' SIGINT SIGTERM
+trap 'echo -e "\n🛑 Shutting down RakshaOS... (Closing all background interceptors)"; kill 0' SIGINT SIGTERM EXIT
 
 # 1. Check for .env
 if [ ! -f .env ]; then
@@ -30,29 +30,55 @@ if [ -z "$GEMINI_API_KEY" ]; then
     exit 1
 fi
 
-echo "✅ API keys loaded."
+echo "✅ Environment configured."
 
-# 2. Start Backend (Telegram bot auto-starts inside if token is set)
-echo "🚀 Starting AI Backend..."
-source venv/bin/activate
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 &
+# 1.5. Ensure dependencies are installed
+if [ ! -d "venv" ]; then
+    echo "📦 Creating virtual environment and installing backend dependencies..."
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r backend/requirements.txt
+else
+    source venv/bin/activate
+fi
+
+if [ ! -d "frontend/node_modules" ]; then
+    echo "📦 Installing frontend dependencies..."
+    (cd frontend && npm install)
+fi
+
+if [ ! -d "whatsapp-monitor/node_modules" ]; then
+    echo "📦 Installing WhatsApp monitor dependencies..."
+    (cd whatsapp-monitor && npm install)
+fi
+
+# 2. Start Backend (Telegram bot auto-starts inside)
+echo "🚀 Starting AI Backend & Telegram Bot..."
+uvicorn backend.main:app --host 0.0.0.0 --port 8000 > backend.log 2>&1 &
 sleep 3
 
 # 3. Start Frontend
-echo "🚀 Starting Command Center..."
-(cd frontend && npm run dev -- -p 3000) &
+echo "🚀 Starting Command Center (Frontend)..."
+(cd frontend && npm run dev -- -p 3000 > ../frontend.log 2>&1) &
 sleep 2
 
+# 4. Start ADB Auto-Monitor (Intercepts AVD SMS silently)
+echo "🚀 Starting ADB Auto-Monitor for Emulator..."
+python3 android-monitor/adb_monitor.py > adb.log 2>&1 &
+
+# 5. Start WhatsApp Auto-Monitor
+echo "🚀 Starting WhatsApp Web Interceptor..."
+echo "   (Check terminal output below for WhatsApp QR Code if not already authenticated)"
+(cd whatsapp-monitor && npm start) &
+
 echo ""
-echo "  ╔══════════════════════════════════════════════════════╗"
-echo "  ║  ✅  RakshaOS is LIVE!                               ║"
-echo "  ║                                                      ║"
-echo "  ║  💻 Command Center:  http://localhost:3000            ║"
-echo "  ║  📱 AVD Companion:   http://10.0.2.2:3000/android    ║"
-echo "  ║  🤖 Telegram Bot:    Auto-started (if token set)     ║"
-echo "  ║                                                      ║"
-echo "  ║  Press Ctrl+C to shut down all systems.              ║"
-echo "  ╚══════════════════════════════════════════════════════╝"
+echo "=========================================================================="
+echo " ✅ All interception layers are LIVE!"
+echo " 💻 Open Command Center: http://localhost:3000"
+echo " 📱 Send a fake SMS using your AVD control panel -> it will auto-intercept"
+echo " 💬 Scan the QR code above with WhatsApp -> it will auto-intercept"
+echo "=========================================================================="
+echo " Press Ctrl+C to stop all monitoring."
 echo ""
 
 # Wait for all background processes

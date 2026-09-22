@@ -1,12 +1,9 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import analyze, recovery
-import json
-import asyncio
 import os
 import threading
 import logging
-from datetime import datetime
 from typing import List
 from contextlib import asynccontextmanager
 
@@ -93,6 +90,7 @@ app.state.event_history = event_history
 app.state.channel_status = channel_status
 app.state.stats = stats
 app.state.family_shield_enabled = False
+app.state.quarantine_list = set()
 
 # ─── WebSocket Endpoint ─────────────────────────────────────
 @app.websocket("/ws")
@@ -113,6 +111,9 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.send_text("pong")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+    except Exception as e:
+        logger.error(f"WebSocket error: {e}")
+        manager.disconnect(websocket)
 
 # ─── REST Endpoints ─────────────────────────────────────────
 @app.get("/health")
@@ -126,6 +127,13 @@ async def get_history():
 @app.get("/api/stats")
 async def get_stats():
     return stats
+
+@app.get("/api/quarantine")
+async def get_quarantine():
+    pass
+    # We'll use the request app state if needed, but we can also just use a global or pass it
+    # Actually, we can just return list(app.state.quarantine_list)
+    return {"quarantined_urls": list(app.state.quarantine_list)}
 
 @app.get("/api/channels")
 async def get_channels():

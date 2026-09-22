@@ -12,7 +12,7 @@ export default function RecoveryPage() {
             Recovery Mode
           </h1>
           <p className="text-gray-400 max-w-xl mx-auto">
-            If you've already transferred money or shared sensitive details, don't panic. Time is critical. Let's build your action plan and complaint draft.
+            If you&apos;ve already transferred money or shared sensitive details, don&apos;t panic. Time is critical. Let&apos;s build your action plan and complaint draft.
           </p>
         </div>
 

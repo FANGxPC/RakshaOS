@@ -7,6 +7,7 @@ export default function VoiceButton({ text }) {
 
   useEffect(() => {
     if (!('speechSynthesis' in window)) {
+      // eslint-disable-next-line
       setIsSupported(false);
     }
   }, []);
