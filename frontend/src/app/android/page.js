@@ -213,7 +213,7 @@ export default function AndroidCompanion() {
              
              {text && (
                 <div className="w-full bg-black/40 rounded-xl p-4 text-left border border-white/10 max-h-[120px] overflow-y-auto">
-                   <p className="text-sm text-gray-200 italic">"{text}"</p>
+                   <p className="text-sm text-gray-200 italic">&quot;{text}&quot;</p>
                 </div>
              )}
              
