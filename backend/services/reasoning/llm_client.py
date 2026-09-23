@@ -12,28 +12,28 @@ class LLMClient:
         if not api_key:
             logger.warning("GEMINI_API_KEY is not set. LLM calls will fail.")
         self.client = genai.Client(api_key=api_key) if api_key else None
-        self.model_name = "gemini-3.6-flash"
+        self.model_name = "gemini-3.8-flash"
 
     async def analyze(self, prompt: str) -> dict:
         if not self.client:
             return self._fallback_response()
             
         try:
-            # Generate content with JSON schema enforced
-            response = await self.client.aio.models.generate_content(
+            # Generate content with JSON schema enforced using Interactions API
+            interaction = await self.client.aio.interactions.create(
                 model=self.model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    temperature=0.1, # Low temperature for more deterministic output
-                ),
+                input=prompt,
+                response_format={
+                    "type": "text",
+                    "mime_type": "application/json"
+                }
             )
             
             try:
-                result = json.loads(response.text)
+                result = json.loads(interaction.output_text)
                 return result
             except json.JSONDecodeError:
-                logger.error(f"Failed to parse JSON from LLM response: {response.text}")
+                logger.error(f"Failed to parse JSON from LLM response: {interaction.output_text}")
                 return self._fallback_response()
                 
         except Exception as e:
@@ -57,14 +57,11 @@ class LLMClient:
             return "Error: GEMINI_API_KEY is not set. Could not generate text."
             
         try:
-            response = await self.client.aio.models.generate_content(
+            interaction = await self.client.aio.interactions.create(
                 model=self.model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.3,
-                ),
+                input=prompt,
             )
-            return response.text
+            return interaction.output_text
         except Exception as e:
             logger.error(f"LLM text generation failed: {str(e)}")
             return f"An error occurred while generating text: {str(e)}"
