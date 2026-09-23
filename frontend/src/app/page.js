@@ -260,7 +260,7 @@ export default function Home() {
                       <span className="text-xl">{CHANNEL_ICONS[ch] || '📡'}</span>
                       <span className="text-sm font-medium text-[#515A6B]">{CHANNEL_NAMES[ch] || ch}</span>
                     </div>
-                    <div className={`w-3 h-3 rounded-full ${active ? 'signal-active' : 'bg-[#E5E1D8]'}`}></div>
+                    <div className={`w-3 h-3 rounded-full ${active ? 'bg-[#4C7A5E] animate-pulse shadow-[0_0_8px_rgba(76,122,94,0.8)]' : 'bg-[#E5E1D8]'}`}></div>
                   </div>
                 ))}
               </div>
@@ -272,7 +272,7 @@ export default function Home() {
           <div className="lg:col-span-3">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-[#1E2433] flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full signal-danger"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#B23A2E] animate-pulse shadow-[0_0_8px_rgba(178,58,46,0.8)]"></span>
                 Live Event Feed
               </h2>
               <span className="text-sm text-[#687080]">{events.length} events logged</span>
@@ -292,26 +292,26 @@ export default function Home() {
                   const isSafe = ev.verdict === 'SAFE';
                   
                   let articleClass = 'border border-[#E5E1D8] bg-white';
-                  let headerClass = 'border-b border-[#E5E1D8] bg-[#F7F4EE] p-5 sm:p-7';
+                  let headerClass = 'border-b border-[#E5E1D8] bg-[#F7F4EE] p-3 sm:p-4';
                   let titleColor = 'text-[#1E2433]';
                   let verdictColor = 'text-[#687080]';
                   let verdictBg = 'bg-[#E5E1D8]';
 
                   if (isHighRisk) {
                     articleClass = 'border border-[#B23A2E]/35 bg-white/60';
-                    headerClass = 'border-b border-[#B23A2E]/25 bg-[#B23A2E]/[0.07] p-5 sm:p-7';
+                    headerClass = 'border-b border-[#B23A2E]/25 bg-[#B23A2E]/[0.07] p-3 sm:p-4';
                     titleColor = 'text-[#1E2433]';
                     verdictColor = 'text-[#B23A2E]';
                     verdictBg = 'bg-[#B23A2E] text-white';
                   } else if (isWarning) {
                     articleClass = 'border border-[#D98E2B]/35 bg-white/60';
-                    headerClass = 'border-b border-[#D98E2B]/25 bg-[#D98E2B]/[0.07] p-5 sm:p-7';
+                    headerClass = 'border-b border-[#D98E2B]/25 bg-[#D98E2B]/[0.07] p-3 sm:p-4';
                     titleColor = 'text-[#1E2433]';
                     verdictColor = 'text-[#D98E2B]';
                     verdictBg = 'bg-[#D98E2B] text-white';
                   } else if (isSafe) {
                     articleClass = 'border border-[#4C7A5E]/35 bg-white/60';
-                    headerClass = 'border-b border-[#4C7A5E]/25 bg-[#4C7A5E]/[0.07] p-5 sm:p-7';
+                    headerClass = 'border-b border-[#4C7A5E]/25 bg-[#4C7A5E]/[0.07] p-3 sm:p-4';
                     titleColor = 'text-[#1E2433]';
                     verdictColor = 'text-[#4C7A5E]';
                     verdictBg = 'bg-[#4C7A5E] text-white';
@@ -320,52 +320,52 @@ export default function Home() {
                   return (
                     <article key={idx} className={`${articleClass} transition-opacity ${idx === 0 ? 'animate-in fade-in duration-500' : ''}`}>
                       <div className={headerClass}>
-                        <div className="flex items-start gap-4">
-                          <span className={`mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${verdictBg}`}>
+                        <div className="flex items-start gap-3">
+                          <span className={`mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${verdictBg}`}>
                             {isHighRisk ? (
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
                             ) : isWarning ? (
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
                             ) : (
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
                             )}
                           </span>
                           <div className="flex-1">
                             <div className="flex justify-between items-center">
-                              <p className={`text-sm font-semibold uppercase tracking-wide ${verdictColor}`}>{ev.verdict?.replace('_', ' ')}</p>
+                              <p className={`text-xs font-bold uppercase tracking-wider ${verdictColor}`}>{ev.verdict?.replace('_', ' ')}</p>
                               <span className="text-xs font-medium text-[#687080]">{timeAgo(ev.timestamp)} • {CHANNEL_NAMES[ev.channel] || ev.channel}</span>
                             </div>
-                            <h1 className={`mt-2 text-xl sm:text-2xl tracking-tight ${titleColor}`}>
+                            <h1 className={`mt-1 text-lg sm:text-xl font-semibold tracking-tight ${titleColor}`}>
                               {ev.verdict === 'SAFE' ? 'This message appears safe.' : 
                                ev.verdict === 'WARNING' ? 'Proceed with caution.' : 
                                'This is very likely a scam.'}
                             </h1>
-                            <div className="mt-4 flex items-center justify-between">
-                              <p className="text-sm font-medium text-[#515A6B]">Risk Score: <span className="font-bold">{ev.risk_score}/100</span></p>
-                            </div>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="p-5 sm:p-7 bg-white">
-                        <h2 className="text-base font-semibold text-[#1E2433] mb-3">Intercepted Payload</h2>
-                        <div className="border border-[#E5E1D8] bg-[#F7F4EE] p-4 text-[#515A6B] text-sm break-words whitespace-pre-wrap">
+                      <div className="p-4 sm:p-5 bg-white">
+                        <div className="flex items-center justify-between mb-2">
+                           <h2 className="text-sm font-semibold text-[#1E2433]">Intercepted Payload</h2>
+                           <p className="text-xs font-medium text-[#515A6B]">Risk Score: <span className={`font-bold ${verdictColor}`}>{ev.risk_score}/100</span></p>
+                        </div>
+                        <div className="border border-[#E5E1D8] bg-[#F7F4EE] p-3 text-[#515A6B] text-sm break-words whitespace-pre-wrap max-h-32 overflow-y-auto">
                           {ev.input_preview || ev.explanation}
                         </div>
                         
                         {ev.explanation && (
-                          <div className="mt-6">
-                            <h2 className="text-base font-semibold text-[#1E2433]">Why we&apos;re saying this</h2>
-                            <p className="mt-3 text-[#515A6B] text-base leading-relaxed">
+                          <div className="mt-4">
+                            <h2 className="text-sm font-semibold text-[#1E2433]">Why we&apos;re saying this</h2>
+                            <p className="mt-1.5 text-[#515A6B] text-sm leading-relaxed">
                               {ev.explanation}
                             </p>
                           </div>
                         )}
                         
                         {isHighRisk && (
-                          <div className="mt-8 border-l-4 border-[#4C7A5E] bg-[#4C7A5E]/[0.09] p-5">
-                            <p className="text-sm font-semibold text-[#4C7A5E]">What to do now</p>
-                            <p className="mt-2 text-base font-medium text-[#1E2433]">Stop replying. Block the sender. Do not click any links or share personal details.</p>
+                          <div className="mt-4 border-l-4 border-[#4C7A5E] bg-[#4C7A5E]/[0.09] p-3">
+                            <p className="text-xs font-bold uppercase tracking-wider text-[#4C7A5E]">What to do now</p>
+                            <p className="mt-1 text-sm font-medium text-[#1E2433]">Stop replying. Block the sender. Do not click any links or share personal details.</p>
                           </div>
                         )}
                       </div>
