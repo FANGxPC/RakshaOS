@@ -19,6 +19,7 @@ seen_sms_ids = set()
 quarantine_list = set()
 seen_whatsapp_msgs = set()
 seen_clipboard_texts = set()
+safe_links = set()
 
 def get_adb_path():
     # Try standard adb first
@@ -253,6 +254,15 @@ def monitor_logcat(adb_path):
                 match = re.search(r'dat=(http[^\s]+|upi://[^\s]+)', line)
                 if match:
                     url = match.group(1)
+                    
+                    # Ignore internal RakshaOS dashboard URLs
+                    if "10.0.2.2:3000" in url or "localhost:3000" in url:
+                        continue
+                        
+                    # If we already proved it's safe, let it open normally
+                    if url in safe_links:
+                        continue
+                        
                     print(f"\n🌐 [AVD Chrome] Intent to open: {url}")
                     
                     is_quarantined = any(q_url in url for q_url in quarantine_list)
@@ -263,7 +273,14 @@ def monitor_logcat(adb_path):
                         blocked_url = "http://10.0.2.2:3000/android?blocked=true"
                         subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", blocked_url])
                     else:
-                        # Real-time check
+                        # 1. Instantly kill Chrome BEFORE scanning
+                        subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
+                        
+                        # 2. Show a "Scanning..." page on the emulator
+                        scanning_url = "http://10.0.2.2:3000/android?scanning=true"
+                        subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", scanning_url])
+                        
+                        # 3. Perform Real-time AI check
                         print("   🔍 Real-time scanning link...")
                         try:
                             resp = requests.post(f"{API_BASE}/analyze", json={
@@ -278,6 +295,11 @@ def monitor_logcat(adb_path):
                                 subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
                                 blocked_url = "http://10.0.2.2:3000/android?blocked=true"
                                 subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", blocked_url])
+                            else:
+                                print(f"   ✅ [SAFE] Link verified. Re-launching Chrome...")
+                                safe_links.add(url)
+                                subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
+                                subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", url])
                         except Exception as e:
                             pass
                         
