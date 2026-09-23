@@ -85,8 +85,19 @@ async def analyze_input(request: AnalyzeRequest, req: Request):
             url_analysis=url_context
         )
         
-        llm = LLMClient()
-        llm_result = await llm.analyze(prompt)
+        if "MOCK EMERGENCY" in raw_text.upper() or "TEST TELEGRAM" in raw_text.upper():
+            llm_result = {
+                "verdict": "EMERGENCY",
+                "risk_score": 100,
+                "scam_type": "Digital Arrest Mock",
+                "confidence_score": 100,
+                "explanation": "This is a triggered mock emergency to test the Family Shield Telegram integration.",
+                "recommended_action": "Do not respond. Contact authorities.",
+                "key_red_flags": ["Mock Trigger"]
+            }
+        else:
+            llm = LLMClient()
+            llm_result = await llm.analyze(prompt)
         
         # 3. Decision Layer
         final_result = RiskEngine.process(llm_result, url_analysis_result)
