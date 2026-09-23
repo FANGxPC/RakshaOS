@@ -177,7 +177,7 @@ def run_telegram_bot():
     app.add_handler(CallbackQueryHandler(callback_handler))
     
     logger.info("🤖 Telegram bot starting...")
-    app.run_polling(allowed_updates=Update.ALL_TYPES)
+    app.run_polling(allowed_updates=Update.ALL_TYPES, stop_signals=())
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
