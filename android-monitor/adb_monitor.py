@@ -17,6 +17,7 @@ API_BASE = "http://localhost:8000/api"
 POLL_INTERVAL = 3  # seconds
 seen_sms_ids = set()
 quarantine_list = set()
+seen_whatsapp_msgs = set()
 
 def get_adb_path():
     # Try standard adb first
@@ -111,6 +112,67 @@ def update_quarantine_list():
             pass
         time.sleep(5)
 
+def monitor_notifications(adb_path):
+    print("   🛡️  Starting WhatsApp Notification Monitor...")
+    try:
+        requests.post(f"{API_BASE}/channel-status", json={"channel": "whatsapp", "status": True}, timeout=5)
+    except:
+        pass
+
+    while True:
+        try:
+            dev_check = subprocess.run([adb_path, "get-state"], capture_output=True, text=True)
+            if "device" not in dev_check.stdout:
+                time.sleep(5)
+                continue
+
+            result = subprocess.run(
+                [adb_path, "shell", "dumpsys", "notification", "--noredact"],
+                capture_output=True, text=True, timeout=10
+            )
+            
+            if result.returncode == 0:
+                output = result.stdout
+                records = output.split("NotificationRecord(")
+                
+                for record in records:
+                    if "pkg=com.whatsapp" in record:
+                        title_match = re.search(r'android\.title=String \((.*?)\)', record)
+                        text_match = re.search(r'android\.text=String \((.*?)\)', record)
+                        
+                        if title_match and text_match:
+                            sender = title_match.group(1)
+                            msg = text_match.group(1)
+                            
+                            # Simple hash to avoid duplicate processing
+                            msg_hash = hash(f"{sender}:{msg}")
+                            
+                            if msg_hash not in seen_whatsapp_msgs:
+                                seen_whatsapp_msgs.add(msg_hash)
+                                
+                                # Ignore standard WhatsApp system messages
+                                if sender != "WhatsApp" and "messages" not in msg.lower():
+                                    print(f"\n📱 [AVD WhatsApp] Notification from {sender}: {msg[:60]}...")
+                                    try:
+                                        resp = requests.post(f"{API_BASE}/analyze", json={
+                                            "input_type": "text",
+                                            "content": f"WhatsApp from {sender}: {msg}",
+                                            "channel": "whatsapp",
+                                            "language_hint": "auto"
+                                        }, timeout=30)
+                                        
+                                        res_json = resp.json()
+                                        verdict = res_json.get('verdict', 'UNKNOWN')
+                                        score = res_json.get('risk_score', 0)
+                                        print(f"   → Verdict: {verdict} ({score}/100)")
+                                    except Exception as e:
+                                        print(f"   ❌ Analysis failed: {e}")
+                                        
+        except Exception as e:
+            pass
+            
+        time.sleep(POLL_INTERVAL)
+
 def monitor_logcat(adb_path):
     print("   🛡️  Starting Deep-Link Intent Monitor (Sinkhole)...")
     try:
@@ -165,6 +227,7 @@ def main():
     # Start Quarantine updater and Logcat monitor threads
     threading.Thread(target=update_quarantine_list, daemon=True).start()
     threading.Thread(target=monitor_logcat, args=(adb_path,), daemon=True).start()
+    threading.Thread(target=monitor_notifications, args=(adb_path,), daemon=True).start()
     
     # Notify backend that SMS channel is active
     try:
