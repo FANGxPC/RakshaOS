@@ -68,6 +68,10 @@ def fetch_sms(adb_path):
             addr_match = re.search(r'address=(.*?),', row)
             address = addr_match.group(1) if addr_match else "Unknown"
             
+            # Privacy: Hide phone numbers
+            if sum(c.isdigit() for c in address) >= 8:
+                address = "Hidden Number"
+            
             # Extract Body (body=..., service_center=)
             body_match = re.search(r'body=(.*?)(?:, service_center=|, locked=)', row)
             body = body_match.group(1) if body_match else ""
@@ -144,6 +148,10 @@ def monitor_notifications(adb_path):
                         if title_match and text_match:
                             sender = title_match.group(1)
                             msg = text_match.group(1)
+                            
+                            # Privacy: Hide phone numbers
+                            if sum(c.isdigit() for c in sender) >= 8:
+                                sender = "Hidden Contact"
                             
                             # Simple hash to avoid duplicate processing
                             msg_hash = hash(f"{sender}:{msg}")
