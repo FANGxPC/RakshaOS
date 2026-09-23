@@ -278,7 +278,7 @@ def monitor_logcat(adb_path):
                         
                         # 2. Show a "Scanning..." page on the emulator
                         scanning_url = "http://10.0.2.2:3000/android?scanning=true"
-                        subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", scanning_url])
+                        subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", scanning_url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         
                         # 3. Perform Real-time AI check
                         print("   🔍 Real-time scanning link...")
@@ -288,20 +288,23 @@ def monitor_logcat(adb_path):
                                 "content": f"User opened URL: {url}",
                                 "channel": "chrome",
                                 "language_hint": "auto"
-                            }, timeout=5)
+                            }, timeout=10)
                             res = resp.json()
                             if res.get("verdict") in ["WARNING", "HIGH_RISK", "EMERGENCY"]:
                                 print(f"   🚨 [SINKHOLE] AI Flagged Link! Force closing browser!")
                                 subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
                                 blocked_url = "http://10.0.2.2:3000/android?blocked=true"
-                                subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", blocked_url])
+                                subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", blocked_url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                             else:
                                 print(f"   ✅ [SAFE] Link verified. Re-launching Chrome...")
                                 safe_links.add(url)
                                 subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
-                                subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", url])
+                                subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         except Exception as e:
-                            pass
+                            print(f"   ⚠️ [TIMEOUT] AI scan took too long. Failing open: {e}")
+                            safe_links.add(url)
+                            subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
+                            subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                         
     except Exception as e:
         print(f"Logcat Monitor Error: {e}")
