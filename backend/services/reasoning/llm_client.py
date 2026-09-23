@@ -26,7 +26,6 @@ class LLMClient:
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.1, # Low temperature for more deterministic output
-                    tools=[{"google_search": {}}], # REAL WORLD DATA: Ground analysis in live Google Search results
                 ),
             )
             
