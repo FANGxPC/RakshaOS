@@ -3,6 +3,7 @@ import logging
 import httpx
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler, ContextTypes
+from telegram.request import HTTPXRequest
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🔍 Analyzing with Scam Genome engine...")
     
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=30.0, verify=False) as client:
             resp = await client.post(f"{API_BASE}/analyze", json={
                 "input_type": "text",
                 "content": text,
@@ -110,7 +111,7 @@ async def photo_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         b64 = base64.b64encode(image_bytes).decode("utf-8")
         
         # Try QR first, fallback to screenshot OCR
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=30.0, verify=False) as client:
             resp = await client.post(f"{API_BASE}/analyze", json={
                 "input_type": "screenshot",
                 "content": b64,
@@ -167,7 +168,9 @@ def run_telegram_bot():
         logger.error("TELEGRAM_BOT_TOKEN not set. Telegram bot will not start.")
         return
     
-    app = Application.builder().token(BOT_TOKEN).build()
+    # Disable SSL verify for local networks / proxies
+    req = HTTPXRequest(connection_pool_size=8, httpx_kwargs={"verify": False})
+    app = Application.builder().token(BOT_TOKEN).request(req).build()
     
     app.add_handler(CommandHandler("start", start_handler))
     app.add_handler(CommandHandler("help", start_handler))

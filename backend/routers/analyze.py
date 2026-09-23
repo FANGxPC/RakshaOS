@@ -155,7 +155,7 @@ async def analyze_input(request: AnalyzeRequest, req: Request):
                         f"Action Taken: Warned user.\n\n"
                         f"Please check on them immediately."
                     )
-                    async with httpx.AsyncClient() as client:
+                    async with httpx.AsyncClient(verify=False) as client:
                         await client.post(
                             f"https://api.telegram.org/bot{bot_token}/sendMessage",
                             json={"chat_id": chat_id, "text": alert_msg, "parse_mode": "Markdown"}
