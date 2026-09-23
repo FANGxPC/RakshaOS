@@ -29,9 +29,9 @@ export default function AndroidCompanion() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      // eslint-disable-next-line
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsBlocked(params.get('blocked') === 'true');
-      // eslint-disable-next-line
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsScanning(params.get('scanning') === 'true');
 
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -140,7 +140,7 @@ export default function AndroidCompanion() {
                 <h1 className="mt-1 text-3xl tracking-[-0.02em] text-[#1E2433] sm:text-4xl">This site is very likely a scam.</h1>
               </div>
             </div>
-            <p className="mt-6 text-lg text-[#515A6B]">RakshaOS intercepted a malicious payload. Please don't enter any details or send money.</p>
+            <p className="mt-6 text-lg text-[#515A6B]">RakshaOS intercepted a malicious payload. Please don&apos;t enter any details or send money.</p>
           </div>
           <div className="p-6 sm:p-9">
              <div className="border-l-4 border-[#4C7A5E] bg-[#4C7A5E]/[0.09] p-5">
