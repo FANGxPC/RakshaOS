@@ -29,7 +29,9 @@ export default function AndroidCompanion() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      // eslint-disable-next-line
       setIsBlocked(params.get('blocked') === 'true');
+      // eslint-disable-next-line
       setIsScanning(params.get('scanning') === 'true');
 
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;

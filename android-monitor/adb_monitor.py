@@ -116,7 +116,7 @@ def update_quarantine_list():
             quarantine_list = set(urls)
         except:
             pass
-        time.sleep(5)
+        time.sleep(30)
 
 def monitor_notifications(adb_path):
     print("   🛡️  Starting WhatsApp Notification Monitor...")
