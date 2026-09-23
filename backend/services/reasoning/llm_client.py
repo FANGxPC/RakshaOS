@@ -20,13 +20,18 @@ class LLMClient:
             
         try:
             # Generate content with JSON schema enforced using Interactions API
-            interaction = await self.client.aio.interactions.create(
-                model=self.model_name,
-                input=prompt,
-                response_format={
-                    "type": "text",
-                    "mime_type": "application/json"
-                }
+            # Wrap in asyncio.wait_for to prevent infinite hangs on 429 retries
+            import asyncio
+            interaction = await asyncio.wait_for(
+                self.client.aio.interactions.create(
+                    model=self.model_name,
+                    input=prompt,
+                    response_format={
+                        "type": "text",
+                        "mime_type": "application/json"
+                    }
+                ),
+                timeout=8.0
             )
             
             try:
@@ -57,9 +62,13 @@ class LLMClient:
             return "Error: GEMINI_API_KEY is not set. Could not generate text."
             
         try:
-            interaction = await self.client.aio.interactions.create(
-                model=self.model_name,
-                input=prompt,
+            import asyncio
+            interaction = await asyncio.wait_for(
+                self.client.aio.interactions.create(
+                    model=self.model_name,
+                    input=prompt,
+                ),
+                timeout=8.0
             )
             return interaction.output_text
         except Exception as e:
