@@ -18,6 +18,7 @@ POLL_INTERVAL = 3  # seconds
 seen_sms_ids = set()
 quarantine_list = set()
 seen_whatsapp_msgs = set()
+seen_clipboard_texts = set()
 
 def get_adb_path():
     # Try standard adb first
@@ -173,8 +174,59 @@ def monitor_notifications(adb_path):
             
         time.sleep(POLL_INTERVAL)
 
+def monitor_clipboard(adb_path):
+    print("   🛡️  Starting Clipboard Monitor...")
+    try:
+        requests.post(f"{API_BASE}/channel-status", json={"channel": "clipboard", "status": True}, timeout=5)
+    except:
+        pass
+
+    while True:
+        try:
+            dev_check = subprocess.run([adb_path, "get-state"], capture_output=True, text=True)
+            if "device" not in dev_check.stdout:
+                time.sleep(5)
+                continue
+
+            result = subprocess.run(
+                [adb_path, "shell", "dumpsys", "clipboard"],
+                capture_output=True, text=True, timeout=5
+            )
+            if result.returncode == 0:
+                output = result.stdout
+                
+                # Extract clipboard text using regex
+                match = re.search(r'ClipData\s*\{.*?text:\s*"(.*?)"', output, re.IGNORECASE | re.DOTALL)
+                if not match:
+                    match = re.search(r'T:"(.*?)"', output)
+                
+                if match:
+                    clip_text = match.group(1).strip()
+                    if clip_text and clip_text not in seen_clipboard_texts:
+                        seen_clipboard_texts.add(clip_text)
+                        
+                        if 5 < len(clip_text) < 1000:
+                            print(f"\n📋 [AVD Clipboard] New copied text: {clip_text[:60]}...")
+                            try:
+                                resp = requests.post(f"{API_BASE}/analyze", json={
+                                    "input_type": "text",
+                                    "content": clip_text,
+                                    "channel": "clipboard",
+                                    "language_hint": "auto"
+                                }, timeout=30)
+                                
+                                res_json = resp.json()
+                                verdict = res_json.get('verdict', 'UNKNOWN')
+                                score = res_json.get('risk_score', 0)
+                                print(f"   → Verdict: {verdict} ({score}/100)")
+                            except Exception as e:
+                                print(f"   ❌ Analysis failed: {e}")
+        except Exception as e:
+            pass
+        time.sleep(POLL_INTERVAL)
+
 def monitor_logcat(adb_path):
-    print("   🛡️  Starting Deep-Link Intent Monitor (Sinkhole)...")
+    print("   🛡️  Starting Deep-Link Intent Monitor (Chrome Filter)...")
     try:
         # Clear logcat first to avoid old logs
         subprocess.run([adb_path, "logcat", "-c"])
@@ -193,19 +245,33 @@ def monitor_logcat(adb_path):
                 match = re.search(r'dat=(http[^\s]+|upi://[^\s]+)', line)
                 if match:
                     url = match.group(1)
-                    # Check if URL is in quarantine list
-                    # To be flexible, check if quarantined URL is a substring
+                    print(f"\n🌐 [AVD Chrome] Intent to open: {url}")
+                    
                     is_quarantined = any(q_url in url for q_url in quarantine_list)
                     
                     if is_quarantined:
-                        print(f"\n🚨 [SINKHOLE] Intercepted Malicious Link: {url}")
-                        print(f"   → Force closing browser and showing warning!")
-                        # Kill Chrome
+                        print(f"   🚨 [SINKHOLE] Pre-quarantined link! Force closing browser!")
                         subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
-                        # Launch blocked page
-                        # Using the companion app route or a generic warning
                         blocked_url = "http://10.0.2.2:3000/android?blocked=true"
                         subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", blocked_url])
+                    else:
+                        # Real-time check
+                        print("   🔍 Real-time scanning link...")
+                        try:
+                            resp = requests.post(f"{API_BASE}/analyze", json={
+                                "input_type": "text",
+                                "content": f"User opened URL: {url}",
+                                "channel": "whatsapp",
+                                "language_hint": "auto"
+                            }, timeout=5)
+                            res = resp.json()
+                            if res.get("verdict") in ["HIGH_RISK", "EMERGENCY"]:
+                                print(f"   🚨 [SINKHOLE] AI Flagged Link! Force closing browser!")
+                                subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
+                                blocked_url = "http://10.0.2.2:3000/android?blocked=true"
+                                subprocess.run([adb_path, "shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", blocked_url])
+                        except Exception as e:
+                            pass
                         
     except Exception as e:
         print(f"Logcat Monitor Error: {e}")
@@ -228,6 +294,7 @@ def main():
     threading.Thread(target=update_quarantine_list, daemon=True).start()
     threading.Thread(target=monitor_logcat, args=(adb_path,), daemon=True).start()
     threading.Thread(target=monitor_notifications, args=(adb_path,), daemon=True).start()
+    threading.Thread(target=monitor_clipboard, args=(adb_path,), daemon=True).start()
     
     # Notify backend that SMS channel is active
     try:
