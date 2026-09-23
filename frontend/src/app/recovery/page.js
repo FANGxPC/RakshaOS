@@ -8,10 +8,10 @@ export default function RecoveryPage() {
       
       <div className="container mx-auto px-4 py-8 flex-grow flex flex-col items-center">
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 font-display text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-500">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-[-0.03em] text-[#1E2433]">
             Recovery Mode
           </h1>
-          <p className="text-gray-400 max-w-xl mx-auto">
+          <p className="text-[#687080] text-lg max-w-xl mx-auto">
             If you&apos;ve already transferred money or shared sensitive details, don&apos;t panic. Time is critical. Let&apos;s build your action plan and complaint draft.
           </p>
         </div>

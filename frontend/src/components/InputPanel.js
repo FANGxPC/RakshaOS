@@ -55,24 +55,24 @@ export default function InputPanel() {
   }
 
   return (
-    <div className="glass-card w-full max-w-2xl mx-auto overflow-hidden">
+    <div className="bg-white border border-[#E5E1D8] w-full max-w-2xl mx-auto overflow-hidden">
       {/* Tabs */}
-      <div className="flex border-b border-gray-700/50">
+      <div className="flex border-b border-[#E5E1D8] bg-[#F7F4EE]">
         <button
           onClick={() => setActiveTab('text')}
-          className={`flex-1 py-4 text-sm font-semibold transition-colors ${activeTab === 'text' ? 'text-blue-400 border-b-2 border-blue-400 bg-blue-500/5' : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'}`}
+          className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider transition-colors ${activeTab === 'text' ? 'text-[#1E2433] border-b-2 border-[#1E2433] bg-white' : 'text-[#8A909B] hover:text-[#515A6B] hover:bg-white/50'}`}
         >
           Paste Text
         </button>
         <button
           onClick={() => setActiveTab('screenshot')}
-          className={`flex-1 py-4 text-sm font-semibold transition-colors ${activeTab === 'screenshot' ? 'text-purple-400 border-b-2 border-purple-400 bg-purple-500/5' : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'}`}
+          className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider transition-colors ${activeTab === 'screenshot' ? 'text-[#1E2433] border-b-2 border-[#1E2433] bg-white' : 'text-[#8A909B] hover:text-[#515A6B] hover:bg-white/50'}`}
         >
           Screenshot
         </button>
         <button
           onClick={() => setActiveTab('qr')}
-          className={`flex-1 py-4 text-sm font-semibold transition-colors ${activeTab === 'qr' ? 'text-emerald-400 border-b-2 border-emerald-400 bg-emerald-500/5' : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'}`}
+          className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider transition-colors ${activeTab === 'qr' ? 'text-[#1E2433] border-b-2 border-[#1E2433] bg-white' : 'text-[#8A909B] hover:text-[#515A6B] hover:bg-white/50'}`}
         >
           QR Code
         </button>
@@ -89,11 +89,11 @@ export default function InputPanel() {
         {activeTab === 'text' && (
           <div className="flex flex-col gap-3">
             <div className="flex justify-between items-center">
-              <label className="text-sm text-gray-400">Paste suspicious message or URL</label>
-              <button onClick={loadExample} className="text-xs text-blue-400 hover:underline">Load Example</button>
+              <label className="text-sm font-bold text-[#515A6B] uppercase tracking-wider">Paste suspicious message or URL</label>
+              <button onClick={loadExample} className="text-xs font-semibold text-[#8A909B] hover:text-[#1E2433] hover:underline transition-colors">Load Example</button>
             </div>
             <textarea
-              className="w-full h-40 bg-black/30 border border-gray-700 rounded-lg p-4 text-gray-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none transition-all"
+              className="w-full h-40 bg-[#FDFCF9] border border-[#D9D5CC] p-4 text-[#1E2433] placeholder:text-[#8A909B] focus:outline-none focus:border-[#1E2433] resize-y transition-all"
               placeholder="e.g. Your SBI account is blocked. Click here to update KYC..."
               value={textContent}
               onChange={handleTextChange}
@@ -104,10 +104,10 @@ export default function InputPanel() {
         {/* File Input (Screenshot/QR) */}
         {(activeTab === 'screenshot' || activeTab === 'qr') && (
           <div className="flex flex-col gap-3">
-            <label className="text-sm text-gray-400">
+            <label className="text-sm font-bold text-[#515A6B] uppercase tracking-wider">
               {activeTab === 'screenshot' ? 'Upload a screenshot of the chat or SMS' : 'Upload the QR code image'}
             </label>
-            <div className="w-full h-40 border-2 border-dashed border-gray-600 rounded-lg flex flex-col items-center justify-center bg-black/20 hover:bg-black/40 transition-colors relative">
+            <div className="w-full h-40 border-2 border-dashed border-[#D9D5CC] bg-[#FDFCF9] hover:bg-white hover:border-[#8A909B] transition-colors relative flex flex-col items-center justify-center">
               <input 
                 type="file" 
                 accept="image/*" 
@@ -116,14 +116,14 @@ export default function InputPanel() {
               />
               {fileContent ? (
                 <div className="flex flex-col items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-[#4C7A5E] mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-sm font-medium text-green-400">Image uploaded successfully</span>
-                  <span className="text-xs text-gray-500 mt-1">Click to change</span>
+                  <span className="text-sm font-semibold text-[#4C7A5E]">Image uploaded successfully</span>
+                  <span className="text-xs font-medium text-[#8A909B] mt-1">Click to change</span>
                 </div>
               ) : (
-                <div className="flex flex-col items-center text-gray-400">
+                <div className="flex flex-col items-center text-[#8A909B]">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
