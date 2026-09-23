@@ -269,11 +269,11 @@ def monitor_logcat(adb_path):
                             resp = requests.post(f"{API_BASE}/analyze", json={
                                 "input_type": "text",
                                 "content": f"User opened URL: {url}",
-                                "channel": "whatsapp",
+                                "channel": "chrome",
                                 "language_hint": "auto"
                             }, timeout=5)
                             res = resp.json()
-                            if res.get("verdict") in ["HIGH_RISK", "EMERGENCY"]:
+                            if res.get("verdict") in ["WARNING", "HIGH_RISK", "EMERGENCY"]:
                                 print(f"   🚨 [SINKHOLE] AI Flagged Link! Force closing browser!")
                                 subprocess.run([adb_path, "shell", "am", "force-stop", "com.android.chrome"])
                                 blocked_url = "http://10.0.2.2:3000/android?blocked=true"
