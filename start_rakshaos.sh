@@ -54,7 +54,7 @@ fi
 
 # 2. Start Backend (Telegram bot auto-starts inside)
 echo "🚀 Starting AI Backend & Telegram Bot..."
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 &
+uvicorn backend.main:app --host 0.0.0.0 --port 8000 --no-access-log &
 sleep 3
 
 # 3. Start Frontend
