@@ -89,7 +89,7 @@ app.state.manager = manager
 app.state.event_history = event_history
 app.state.channel_status = channel_status
 app.state.stats = stats
-app.state.family_shield_enabled = False
+app.state.family_shield_enabled = True
 app.state.quarantine_list = set()
 
 # ─── WebSocket Endpoint ─────────────────────────────────────
