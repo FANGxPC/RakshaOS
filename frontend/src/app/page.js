@@ -226,162 +226,153 @@ export default function Home() {
         )}
 
         {/* ─── Main Grid ───────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
 
           {/* ── Left Sidebar: Stats & Channels ────────────── */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-1 space-y-6">
 
             {/* Live Stats */}
-            <div className="glass-card p-5">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Live Statistics</h3>
+            <div className="border border-[#D9D5CC] bg-white/55 p-6 shadow-sm">
+              <h3 className="text-sm font-semibold text-[#1E2433] mb-5">System Statistics</h3>
               <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-400">Total Scanned</span>
-                    <span className="text-white font-bold text-lg">{stats.total_scanned}</span>
-                  </div>
+                <div className="flex justify-between items-center pb-3 border-b border-[#E5E1D8]">
+                  <span className="text-[#687080] text-sm">Total Scanned</span>
+                  <span className="text-[#1E2433] font-bold text-lg">{stats.total_scanned}</span>
                 </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-400">Threats Detected</span>
-                    <span className="text-red-400 font-bold text-lg">{stats.threats_detected}</span>
-                  </div>
+                <div className="flex justify-between items-center pb-3 border-b border-[#E5E1D8]">
+                  <span className="text-[#687080] text-sm">Threats Detected</span>
+                  <span className="text-[#B23A2E] font-bold text-lg">{stats.threats_detected}</span>
                 </div>
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-400">Safe</span>
-                    <span className="text-green-400 font-bold text-lg">{stats.safe_count}</span>
-                  </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#687080] text-sm">Safe</span>
+                  <span className="text-[#4C7A5E] font-bold text-lg">{stats.safe_count}</span>
                 </div>
               </div>
             </div>
 
             {/* Channel Status */}
-            <div className="glass-card p-5">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Channels</h3>
-              <div className="space-y-3">
+            <div className="border border-[#D9D5CC] bg-white/55 p-6 shadow-sm">
+              <h3 className="text-sm font-semibold text-[#1E2433] mb-5">Active Channels</h3>
+              <div className="space-y-4">
                 {Object.entries(channels).map(([ch, active]) => (
                   <div key={ch} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">{CHANNEL_ICONS[ch] || '📡'}</span>
-                      <span className="text-sm text-gray-300">{CHANNEL_NAMES[ch] || ch}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">{CHANNEL_ICONS[ch] || '📡'}</span>
+                      <span className="text-sm font-medium text-[#515A6B]">{CHANNEL_NAMES[ch] || ch}</span>
                     </div>
-                    <div className={`w-2.5 h-2.5 rounded-full ${active ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-gray-600'}`}></div>
+                    <div className={`w-3 h-3 rounded-full ${active ? 'bg-[#4C7A5E]' : 'bg-[#E5E1D8]'}`}></div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Threat Categories */}
-            {sortedCategories.length > 0 && (
-              <div className="glass-card p-5">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Threat Types</h3>
-                <div className="space-y-2">
-                  {sortedCategories.map(([cat, count]) => (
-                    <div key={cat} className="flex items-center gap-2">
-                      <div className="flex-1 bg-gray-800 rounded-full h-2 overflow-hidden">
-                        <div className="bg-red-500 h-full rounded-full" style={{ width: `${Math.min(100, count * 20)}%` }}></div>
-                      </div>
-                      <span className="text-xs text-gray-400 w-24 truncate">{cat.replace(/_/g, ' ')}</span>
-                      <span className="text-xs font-bold text-red-400">{count}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Family Shield */}
-            <div className={`glass-card p-5 border ${familyShield ? 'border-blue-500/50 bg-blue-500/10' : 'border-gray-800'}`}>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-2">
-                  <span>👨‍👩‍👧</span> Family Shield
-                </h3>
-                <button 
-                  onClick={toggleFamilyShield}
-                  className={`w-10 h-5 rounded-full relative transition-colors ${familyShield ? 'bg-blue-500' : 'bg-gray-600'}`}
-                >
-                  <div className={`w-4 h-4 rounded-full bg-white absolute top-0.5 transition-all ${familyShield ? 'left-5' : 'left-1'}`}></div>
-                </button>
-              </div>
-              <p className="text-xs text-gray-400">
-                {familyShield 
-                  ? 'Active: Emergency alerts will be forwarded to your trusted contact via Telegram.' 
-                  : 'Inactive: Turn on to auto-alert family members during emergencies.'}
-              </p>
-            </div>
           </div>
 
           {/* ── Main Feed: Live Threat Feed ───────────────── */}
           <div className="lg:col-span-3">
-            <div className="glass-card p-5 min-h-[600px]">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                  Live Threat Feed
-                </h3>
-                <span className="text-xs text-gray-600">{events.length} events</span>
-              </div>
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-[#1E2433] flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#B23A2E] animate-pulse"></span>
+                Live Event Feed
+              </h2>
+              <span className="text-sm text-[#687080]">{events.length} events logged</span>
+            </div>
 
-              <div ref={feedRef} className="space-y-3 max-h-[calc(100vh-280px)] overflow-y-auto pr-2">
-                {events.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-20 text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mb-4 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    <p className="text-sm font-medium">Waiting for events...</p>
-                    <p className="text-xs mt-1">Start WhatsApp monitor, Telegram bot, or Chrome extension to see live interceptions.</p>
-                  </div>
-                ) : (
-                  events.map((ev, idx) => {
-                    const isHighRisk = ev.verdict === 'HIGH_RISK' || ev.verdict === 'EMERGENCY';
-                    const isWarning = ev.verdict === 'WARNING';
-                    const isSafe = ev.verdict === 'SAFE';
-                    
-                    let bgClass = 'bg-[#151520] border-gray-800';
-                    let textGlow = 'text-gray-400';
-                    
-                    if (isHighRisk) {
-                      bgClass = 'bg-[#2a050d] border-[#ff003c]/40 shadow-[0_0_15px_rgba(255,0,60,0.1)]';
-                      textGlow = 'text-[#ff003c] drop-shadow-[0_0_8px_rgba(255,0,60,0.8)]';
-                    } else if (isWarning) {
-                      bgClass = 'bg-[#2a1a05] border-[#ffbb00]/40 shadow-[0_0_15px_rgba(255,187,0,0.1)]';
-                      textGlow = 'text-[#ffbb00] drop-shadow-[0_0_8px_rgba(255,187,0,0.8)]';
-                    } else if (isSafe) {
-                      bgClass = 'bg-[#052a1d] border-[#00ff88]/40 shadow-[0_0_15px_rgba(0,255,136,0.1)]';
-                      textGlow = 'text-[#00ff88] drop-shadow-[0_0_8px_rgba(0,255,136,0.8)]';
-                    }
+            <div ref={feedRef} className="space-y-6 max-h-[calc(100vh-280px)] overflow-y-auto pr-2 pb-10">
+              {events.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-[#687080]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 opacity-50"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+                  <p className="text-base font-medium">Waiting for events...</p>
+                  <p className="text-sm mt-2">Start sending messages to the emulator to see interceptions.</p>
+                </div>
+              ) : (
+                events.map((ev, idx) => {
+                  const isHighRisk = ev.verdict === 'HIGH_RISK' || ev.verdict === 'EMERGENCY';
+                  const isWarning = ev.verdict === 'WARNING';
+                  const isSafe = ev.verdict === 'SAFE';
+                  
+                  let articleClass = 'border border-[#E5E1D8] bg-white';
+                  let headerClass = 'border-b border-[#E5E1D8] bg-[#F7F4EE] p-5 sm:p-7';
+                  let titleColor = 'text-[#1E2433]';
+                  let verdictColor = 'text-[#687080]';
+                  let verdictBg = 'bg-[#E5E1D8]';
 
-                    return (
-                      <div key={idx} className={`p-4 rounded-xl border transition-all hover:scale-[1.01] ${bgClass} ${idx === 0 ? 'animate-in slide-in-from-right duration-300' : ''}`}>
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-start gap-3 flex-1 min-w-0">
-                            <span className="text-2xl flex-shrink-0 drop-shadow-md">{CHANNEL_ICONS[ev.channel] || '📡'}</span>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-widest ${isHighRisk ? 'bg-[#ff003c] text-white' : isWarning ? 'bg-[#ffbb00] text-black' : 'bg-[#00ff88] text-black'}`}>
-                                  {ev.verdict?.replace('_', ' ')}
-                                </span>
-                                <span className="text-xs text-gray-500 font-mono tracking-tight uppercase">
-                                  {CHANNEL_NAMES[ev.channel] || ev.channel}
-                                </span>
-                                <span className="text-xs text-gray-600 font-mono">{timeAgo(ev.timestamp)}</span>
-                              </div>
-                              <p className="text-sm text-gray-200 truncate font-mono mt-1">{ev.input_preview || ev.explanation}</p>
-                              {ev.explanation && (
-                                <p className="text-xs text-gray-400 mt-1 line-clamp-2 italic border-l-2 border-gray-700 pl-2">{ev.explanation}</p>
-                              )}
+                  if (isHighRisk) {
+                    articleClass = 'border border-[#B23A2E]/35 bg-white/60';
+                    headerClass = 'border-b border-[#B23A2E]/25 bg-[#B23A2E]/[0.07] p-5 sm:p-7';
+                    titleColor = 'text-[#1E2433]';
+                    verdictColor = 'text-[#B23A2E]';
+                    verdictBg = 'bg-[#B23A2E] text-white';
+                  } else if (isWarning) {
+                    articleClass = 'border border-[#D98E2B]/35 bg-white/60';
+                    headerClass = 'border-b border-[#D98E2B]/25 bg-[#D98E2B]/[0.07] p-5 sm:p-7';
+                    titleColor = 'text-[#1E2433]';
+                    verdictColor = 'text-[#D98E2B]';
+                    verdictBg = 'bg-[#D98E2B] text-white';
+                  } else if (isSafe) {
+                    articleClass = 'border border-[#4C7A5E]/35 bg-white/60';
+                    headerClass = 'border-b border-[#4C7A5E]/25 bg-[#4C7A5E]/[0.07] p-5 sm:p-7';
+                    titleColor = 'text-[#1E2433]';
+                    verdictColor = 'text-[#4C7A5E]';
+                    verdictBg = 'bg-[#4C7A5E] text-white';
+                  }
+
+                  return (
+                    <article key={idx} className={`${articleClass} transition-opacity ${idx === 0 ? 'animate-in fade-in duration-500' : ''}`}>
+                      <div className={headerClass}>
+                        <div className="flex items-start gap-4">
+                          <span className={`mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${verdictBg}`}>
+                            {isHighRisk ? (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                            ) : isWarning ? (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                            )}
+                          </span>
+                          <div className="flex-1">
+                            <div className="flex justify-between items-center">
+                              <p className={`text-sm font-semibold uppercase tracking-wide ${verdictColor}`}>{ev.verdict?.replace('_', ' ')}</p>
+                              <span className="text-xs font-medium text-[#687080]">{timeAgo(ev.timestamp)} • {CHANNEL_NAMES[ev.channel] || ev.channel}</span>
                             </div>
-                          </div>
-                          <div className="flex-shrink-0 text-right">
-                            <div className={`text-3xl font-bold font-display ${textGlow}`}>{ev.risk_score}</div>
-                            <div className="text-[10px] text-gray-500 font-mono">/ 100 RISK</div>
+                            <h1 className={`mt-2 text-xl sm:text-2xl tracking-tight ${titleColor}`}>
+                              {ev.verdict === 'SAFE' ? 'This message appears safe.' : 
+                               ev.verdict === 'WARNING' ? 'Proceed with caution.' : 
+                               'This is very likely a scam.'}
+                            </h1>
+                            <div className="mt-4 flex items-center justify-between">
+                              <p className="text-sm font-medium text-[#515A6B]">Risk Score: <span className="font-bold">{ev.risk_score}/100</span></p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    );
-                  })
-                )}
-              </div>
+                      
+                      <div className="p-5 sm:p-7 bg-white">
+                        <h2 className="text-base font-semibold text-[#1E2433] mb-3">Intercepted Payload</h2>
+                        <div className="border border-[#E5E1D8] bg-[#F7F4EE] p-4 text-[#515A6B] text-sm break-words whitespace-pre-wrap">
+                          {ev.input_preview || ev.explanation}
+                        </div>
+                        
+                        {ev.explanation && (
+                          <div className="mt-6">
+                            <h2 className="text-base font-semibold text-[#1E2433]">Why we&apos;re saying this</h2>
+                            <p className="mt-3 text-[#515A6B] text-base leading-relaxed">
+                              {ev.explanation}
+                            </p>
+                          </div>
+                        )}
+                        
+                        {isHighRisk && (
+                          <div className="mt-8 border-l-4 border-[#4C7A5E] bg-[#4C7A5E]/[0.09] p-5">
+                            <p className="text-sm font-semibold text-[#4C7A5E]">What to do now</p>
+                            <p className="mt-2 text-base font-medium text-[#1E2433]">Stop replying. Block the sender. Do not click any links or share personal details.</p>
+                          </div>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>

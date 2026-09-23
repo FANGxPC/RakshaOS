@@ -2,79 +2,53 @@ import Link from 'next/link';
 
 export default function Hero() {
   return (
-    <div className="flex flex-col items-center text-center mt-24 mb-16 px-4 max-w-5xl mx-auto relative">
-      
-      {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+    <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-16 mt-16">
+      <section className="mx-auto max-w-3xl">
+        <div className="mb-10 max-w-xl">
+          <div className="mb-5 flex items-center gap-2 text-sm font-medium text-[#4C7A5E]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> 
+            Here to help you pause and check
+          </div>
+          <h1 className="text-4xl tracking-[-0.03em] text-[#1E2433] sm:text-5xl">Not sure about a message?</h1>
+          <p className="mt-5 text-lg text-[#687080] sm:text-xl">
+            RakshaOS intercepts scams natively at the OS layer. Or, you can manually paste a message below, and we&apos;ll explain what it means and what you can do next.
+          </p>
+        </div>
 
-      {/* Cyber Security Scanner Graphic */}
-      <div className="relative w-32 h-32 mb-8 mx-auto flex items-center justify-center">
-        <div className="absolute inset-0 rounded-full border border-blue-500/30"></div>
-        <div className="absolute inset-2 rounded-full border border-blue-400/20 border-t-blue-400 animate-spin" style={{ animationDuration: '3s' }}></div>
-        <div className="absolute inset-6 rounded-full border border-purple-500/20 border-b-purple-500 animate-[spin_4s_reverse_infinite]"></div>
-        <div className="absolute inset-0 rounded-full bg-gradient-to-b from-blue-500/10 to-transparent"></div>
+        <div className="border border-[#D9D5CC] bg-white/55 p-5 sm:p-7 shadow-sm">
+          <label htmlFor="message" className="mb-3 block text-base font-semibold text-[#1E2433]">Paste the message here</label>
+          <textarea
+            id="message"
+            placeholder="Paste a WhatsApp message, SMS, email, or anything that feels unusual..."
+            className="min-h-44 w-full resize-y border border-[#D9D5CC] bg-[#FDFCF9] p-4 text-base text-[#1E2433] placeholder:text-[#8A909B] focus:border-[#1E2433] focus:outline-none"
+          />
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap gap-2">
+              <button className="flex items-center gap-2 border border-[#D9D5CC] bg-transparent text-sm font-medium text-[#515A6B] hover:bg-[#F7F4EE]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+                Paste
+              </button>
+            </div>
+            <Link href="/analyze" className="flex items-center justify-center gap-2 bg-[#1E2433] px-5 py-3 text-base font-semibold text-white transition-opacity hover:opacity-90">
+              Check this message 
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <Link href="/recovery" className="flex items-center gap-3 border border-[#E5E1D8] bg-white/35 p-4 text-left text-sm font-medium text-[#515A6B] hover:border-[#B7B2A8]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>I already paid</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="ml-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </Link>
+        </div>
         
-        {/* Scanner Line */}
-        <div className="absolute inset-0 overflow-hidden rounded-full">
-          <div className="w-full h-[2px] bg-blue-400 shadow-[0_0_15px_#60a5fa] animate-[scan-line_3s_linear_infinite]"></div>
-        </div>
-
-        <svg className="w-10 h-10 text-blue-400 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)] relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-      </div>
-
-      <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-[#00f0ff]/30 bg-[#00f0ff]/10 text-[#00f0ff] text-xs font-bold tracking-[0.2em] uppercase shadow-[0_0_15px_rgba(0,240,255,0.2)]">
-        SYSTEM ONLINE • ALL CHANNELS SECURE
-      </div>
-      
-      <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
-        Omnipresent AI Security for the <br className="hidden md:block"/>
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f0ff] to-[#0055ff] drop-shadow-sm">
-          Digital World
-        </span>
-      </h1>
-      
-      <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto font-light tracking-wide">
-        RakshaOS intercepts scams, fraud, manipulation, and risky digital actions natively at the OS layer—before they cause financial harm.
-      </p>
-      
-      <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
-        <Link href="/analyze" className="btn-primary text-lg px-8 py-4 w-full sm:w-auto">
-          Scan Payload
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </Link>
-        <Link href="/recovery" className="glass-panel text-lg px-8 py-4 text-white hover:bg-white/10 transition-colors flex items-center justify-center gap-2 w-full sm:w-auto">
-          <span className="text-red-400 font-bold">SOS</span> Recovery Mode
-        </Link>
-      </div>
-      
-      {/* High-Tech Stats Ticker */}
-      <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 w-full text-left relative z-10">
-        <div className="glass-card p-6 border-l-[3px] border-l-[#ff003c] relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
-          </div>
-          <div className="text-3xl font-bold text-white mb-1 tracking-tight font-display">₹52,000 Cr+</div>
-          <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Cumulative digital scam losses</div>
-        </div>
-        <div className="glass-card p-6 border-l-[3px] border-l-[#ffbb00] relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-             <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-          </div>
-          <div className="text-3xl font-bold text-white mb-1 tracking-tight font-display">12.71 Lakh</div>
-          <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Cyber fraud complaints (H1 2026)</div>
-        </div>
-        <div className="glass-card p-6 border-l-[3px] border-l-[#00f0ff] relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-             <svg className="w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-          </div>
-          <div className="text-3xl font-bold text-white mb-1 tracking-tight font-display">29%</div>
-          <div className="text-xs text-gray-400 uppercase tracking-wider font-semibold">Average fund recovery rate</div>
-        </div>
-      </div>
+        <p className="mt-8 flex items-center gap-2 text-sm text-[#687080]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" className="text-[#4C7A5E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 4.81 17 6 19 6a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+          Your messages are checked privately on-device and never shared without your say-so.
+        </p>
+      </section>
     </div>
   );
 }

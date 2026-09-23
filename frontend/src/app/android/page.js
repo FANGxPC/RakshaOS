@@ -128,37 +128,45 @@ export default function AndroidCompanion() {
 
   if (isBlocked) {
     return (
-      <div className="min-h-screen bg-[#050508] flex flex-col items-center justify-center p-6 text-center text-white" style={{ fontFamily: "'Inter', 'Roboto', sans-serif" }}>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,0,60,0.15)_0%,rgba(5,5,8,1)_70%)] pointer-events-none"></div>
-        <div className="relative z-10 w-32 h-32 bg-[#ff003c]/20 rounded-full flex items-center justify-center mb-8 animate-pulse shadow-[0_0_80px_rgba(255,0,60,0.4)] border border-[#ff003c]/50">
-           <svg className="w-16 h-16 text-[#ff003c] drop-shadow-[0_0_15px_rgba(255,0,60,0.8)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-           </svg>
-        </div>
-        <h1 className="relative z-10 text-4xl font-black mb-4 tracking-tighter text-[#ff003c] uppercase drop-shadow-[0_0_10px_rgba(255,0,60,0.5)]">Connection Terminated</h1>
-        <p className="relative z-10 text-gray-400 mb-8 max-w-sm text-lg leading-relaxed font-mono">RakshaOS intercepted a malicious payload attempting to execute on your device.</p>
-        <button className="relative z-10 px-10 py-4 bg-transparent border-2 border-[#ff003c] text-[#ff003c] hover:bg-[#ff003c] hover:text-white rounded-lg transition-all font-bold tracking-widest uppercase shadow-[0_0_20px_rgba(255,0,60,0.2)] hover:shadow-[0_0_30px_rgba(255,0,60,0.6)]" onClick={() => window.close()}>
-          Close Tab & Destroy Instance
-        </button>
+      <div className="min-h-screen bg-[#F7F4EE] flex flex-col items-center justify-center p-6 text-center text-[#1E2433]">
+        <article className="border border-[#B23A2E]/35 bg-white shadow-sm max-w-lg w-full text-left">
+          <div className="border-b border-[#B23A2E]/25 bg-[#B23A2E]/[0.07] p-6 sm:p-9">
+            <div className="flex items-start gap-4">
+              <span className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#B23A2E] text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-[#B23A2E] uppercase tracking-wide">Connection Blocked</p>
+                <h1 className="mt-1 text-3xl tracking-[-0.02em] text-[#1E2433] sm:text-4xl">This site is very likely a scam.</h1>
+              </div>
+            </div>
+            <p className="mt-6 text-lg text-[#515A6B]">RakshaOS intercepted a malicious payload. Please don't enter any details or send money.</p>
+          </div>
+          <div className="p-6 sm:p-9">
+             <div className="border-l-4 border-[#4C7A5E] bg-[#4C7A5E]/[0.09] p-5">
+               <p className="text-sm font-semibold text-[#4C7A5E]">What to do now</p>
+               <p className="mt-2 text-lg font-medium text-[#1E2433]">Close this tab immediately. Do not click any further links.</p>
+             </div>
+             <div className="mt-6">
+                <button className="flex items-center justify-center gap-2 bg-[#1E2433] text-base font-semibold text-white px-6 py-4 w-full" onClick={() => window.close()}>
+                  Close Tab
+                </button>
+             </div>
+          </div>
+        </article>
       </div>
     );
   }
 
   if (isScanning) {
     return (
-      <div className="min-h-screen bg-[#050508] flex flex-col items-center justify-center p-6 text-center text-white" style={{ fontFamily: "'Inter', 'Roboto', sans-serif" }}>
-        <div className="relative w-32 h-32 mb-8">
-           <div className="absolute inset-0 rounded-full border-4 border-[#00f0ff]/20 shadow-[0_0_40px_rgba(0,240,255,0.2)]"></div>
-           <div className="absolute inset-0 rounded-full border-4 border-[#00f0ff] border-t-transparent animate-spin" style={{ animationDuration: '1.5s' }}></div>
-           <div className="absolute inset-4 rounded-full border-2 border-[#0055ff]/40 border-b-[#0055ff] animate-[spin_2s_reverse_infinite]"></div>
-           <div className="absolute inset-0 flex items-center justify-center">
-             <svg className="w-10 h-10 text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.8)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-             </svg>
-           </div>
+      <div className="min-h-screen bg-[#F7F4EE] flex flex-col items-center justify-center p-6 text-center text-[#1E2433]">
+        <div className="mb-6 flex items-center gap-2 text-sm font-medium text-[#4C7A5E]">
+           <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+           Checking connection...
         </div>
-        <h1 className="text-3xl font-black mb-4 tracking-tighter uppercase text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]">RakshaOS Active Scan</h1>
-        <p className="text-[#00f0ff]/70 mb-8 max-w-sm text-sm font-mono tracking-wider animate-pulse">Analyzing intent payload trajectory...</p>
+        <h1 className="text-3xl font-semibold tracking-[-0.02em]">RakshaOS is scanning this link</h1>
+        <p className="mt-3 text-lg text-[#687080]">Please wait a moment while we ensure this destination is safe.</p>
       </div>
     );
   }
