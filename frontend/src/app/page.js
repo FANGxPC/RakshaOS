@@ -78,7 +78,13 @@ export default function Home() {
           }
 
           if (msg.type === 'new_analysis') {
-            setEvents(prev => [msg.data, ...prev].slice(0, 50));
+            setEvents(prev => {
+              // Deduplicate events to prevent double-renders in StrictMode or on reconnects
+              if (prev.some(e => e.timestamp === msg.data.timestamp && e.channel === msg.data.channel)) {
+                return prev;
+              }
+              return [msg.data, ...prev].slice(0, 50);
+            });
             setStats(msg.stats || {});
 
             // Play sound for dangerous verdicts
@@ -197,19 +203,19 @@ export default function Home() {
         {/* ─── Top Bar ──────────────────────────────────────── */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-            <h1 className="text-xl md:text-2xl font-display font-bold">
+            <div className={`w-3 h-3 rounded-full ${connected ? 'bg-[#4C7A5E] animate-pulse shadow-[0_0_8px_rgba(76,122,94,0.8)]' : 'bg-[#B23A2E]'}`}></div>
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#1E2433]">
               🛡️ Command Center
             </h1>
-            <span className="text-sm text-gray-500 hidden md:inline">
+            <span className="text-sm font-medium text-[#687080] hidden md:inline">
               {activeChannelCount}/{totalChannels} Channels Active
             </span>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setShowManualInput(!showManualInput)} className="text-xs px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-gray-300 hover:bg-white/10">
+            <button onClick={() => setShowManualInput(!showManualInput)} className="text-xs font-semibold px-3 py-2 border border-[#D9D5CC] bg-white text-[#515A6B] hover:bg-[#F7F4EE] transition-colors uppercase tracking-wider">
               {showManualInput ? 'Hide' : '+ Manual Check'}
             </button>
-            <Link href="/recovery" className="text-xs px-3 py-2 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20">
+            <Link href="/recovery" className="text-xs font-semibold px-3 py-2 border border-[#B23A2E]/25 bg-[#B23A2E]/[0.07] text-[#B23A2E] hover:bg-[#B23A2E]/[0.15] transition-colors uppercase tracking-wider flex items-center gap-1">
               🆘 Recovery Mode
             </Link>
           </div>
@@ -217,9 +223,9 @@ export default function Home() {
 
         {/* ─── Manual Input (Collapsible) ───────────────────── */}
         {showManualInput && (
-          <div className="mb-6 glass-card p-4 flex gap-3">
-            <textarea value={manualText} onChange={e => setManualText(e.target.value)} placeholder="Paste suspicious message here..." className="flex-1 bg-black/30 border border-gray-700 rounded-lg p-3 text-sm text-gray-200 focus:border-blue-500 outline-none resize-none h-20" />
-            <button onClick={handleManualAnalyze} disabled={analyzing} className="btn-primary h-20 px-6">
+          <div className="mb-6 border border-[#E5E1D8] bg-white p-4 flex flex-col sm:flex-row gap-3 shadow-sm">
+            <textarea value={manualText} onChange={e => setManualText(e.target.value)} placeholder="Paste suspicious message here..." className="flex-1 bg-[#FDFCF9] border border-[#D9D5CC] p-3 text-sm text-[#1E2433] placeholder:text-[#8A909B] focus:border-[#1E2433] outline-none resize-none h-20 sm:h-auto min-h-[5rem]" />
+            <button onClick={handleManualAnalyze} disabled={analyzing} className="btn-primary px-6 py-3 whitespace-nowrap self-end sm:self-stretch">
               {analyzing ? '...' : 'Analyze'}
             </button>
           </div>
