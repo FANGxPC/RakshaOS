@@ -9,7 +9,7 @@ echo "  ╚═══════════════════════
 echo ""
 
 # 0. Register the shutdown trap FIRST
-trap 'echo -e "\n🛑 Shutting down RakshaOS... (Closing all background interceptors)"; kill 0' SIGINT SIGTERM EXIT
+trap 'trap - SIGINT SIGTERM EXIT; echo -e "\n🛑 Shutting down RakshaOS... (Closing all background interceptors)"; kill 0' SIGINT SIGTERM EXIT
 
 # 1. Check for .env
 if [ ! -f .env ]; then
@@ -66,17 +66,13 @@ sleep 2
 echo "🚀 Starting ADB Auto-Monitor for Emulator..."
 python3 android-monitor/adb_monitor.py > adb.log 2>&1 &
 
-# 5. Start WhatsApp Auto-Monitor
-echo "🚀 Starting WhatsApp Web Interceptor..."
-echo "   (Check terminal output below for WhatsApp QR Code if not already authenticated)"
-(cd whatsapp-monitor && npm start) &
+
 
 echo ""
 echo "=========================================================================="
 echo " ✅ All interception layers are LIVE!"
 echo " 💻 Open Command Center: http://localhost:3000"
 echo " 📱 Send a fake SMS using your AVD control panel -> it will auto-intercept"
-echo " 💬 Scan the QR code above with WhatsApp -> it will auto-intercept"
 echo "=========================================================================="
 echo " Press Ctrl+C to stop all monitoring."
 echo ""
