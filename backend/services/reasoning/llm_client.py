@@ -20,7 +20,7 @@ class LLMClient:
             
         try:
             # Generate content with JSON schema enforced
-            response = self.client.models.generate_content(
+            response = await self.client.aio.models.generate_content(
                 model=self.model_name,
                 contents=prompt,
                 config=types.GenerateContentConfig(
@@ -57,7 +57,7 @@ class LLMClient:
             return "Error: GEMINI_API_KEY is not set. Could not generate text."
             
         try:
-            response = self.client.models.generate_content(
+            response = await self.client.aio.models.generate_content(
                 model=self.model_name,
                 contents=prompt,
                 config=types.GenerateContentConfig(
