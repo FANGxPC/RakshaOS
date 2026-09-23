@@ -233,7 +233,7 @@ def monitor_logcat(adb_path):
         
         # Monitor logcat continuously for VIEW intents
         process = subprocess.Popen(
-            [adb_path, "logcat", "ActivityManager:I", "*:S"],
+            [adb_path, "logcat", "ActivityManager:I", "ActivityTaskManager:I", "*:S"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True

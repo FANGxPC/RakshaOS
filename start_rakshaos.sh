@@ -54,7 +54,7 @@ fi
 
 # 2. Start Backend (Telegram bot auto-starts inside)
 echo "🚀 Starting AI Backend & Telegram Bot..."
-uvicorn backend.main:app --host 0.0.0.0 --port 8000 > backend.log 2>&1 &
+uvicorn backend.main:app --host 0.0.0.0 --port 8000 &
 sleep 3
 
 # 3. Start Frontend
@@ -64,7 +64,7 @@ sleep 2
 
 # 4. Start ADB Auto-Monitor (Intercepts AVD SMS silently)
 echo "🚀 Starting ADB Auto-Monitor for Emulator..."
-python3 android-monitor/adb_monitor.py > adb.log 2>&1 &
+python3 android-monitor/adb_monitor.py &
 
 
 
