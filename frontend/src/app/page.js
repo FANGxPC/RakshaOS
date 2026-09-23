@@ -333,31 +333,48 @@ export default function Home() {
                   </div>
                 ) : (
                   events.map((ev, idx) => {
-                    const styles = VERDICT_STYLES[ev.verdict] || VERDICT_STYLES.WARNING;
+                    const isHighRisk = ev.verdict === 'HIGH_RISK' || ev.verdict === 'EMERGENCY';
+                    const isWarning = ev.verdict === 'WARNING';
+                    const isSafe = ev.verdict === 'SAFE';
+                    
+                    let bgClass = 'bg-[#151520] border-gray-800';
+                    let textGlow = 'text-gray-400';
+                    
+                    if (isHighRisk) {
+                      bgClass = 'bg-[#2a050d] border-[#ff003c]/40 shadow-[0_0_15px_rgba(255,0,60,0.1)]';
+                      textGlow = 'text-[#ff003c] drop-shadow-[0_0_8px_rgba(255,0,60,0.8)]';
+                    } else if (isWarning) {
+                      bgClass = 'bg-[#2a1a05] border-[#ffbb00]/40 shadow-[0_0_15px_rgba(255,187,0,0.1)]';
+                      textGlow = 'text-[#ffbb00] drop-shadow-[0_0_8px_rgba(255,187,0,0.8)]';
+                    } else if (isSafe) {
+                      bgClass = 'bg-[#052a1d] border-[#00ff88]/40 shadow-[0_0_15px_rgba(0,255,136,0.1)]';
+                      textGlow = 'text-[#00ff88] drop-shadow-[0_0_8px_rgba(0,255,136,0.8)]';
+                    }
+
                     return (
-                      <div key={idx} className={`p-4 rounded-xl border ${styles.bg} ${styles.border} transition-all hover:scale-[1.01] ${idx === 0 ? 'animate-in slide-in-from-right duration-300' : ''}`}>
+                      <div key={idx} className={`p-4 rounded-xl border transition-all hover:scale-[1.01] ${bgClass} ${idx === 0 ? 'animate-in slide-in-from-right duration-300' : ''}`}>
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-start gap-3 flex-1 min-w-0">
-                            <span className="text-2xl flex-shrink-0">{CHANNEL_ICONS[ev.channel] || '📡'}</span>
+                            <span className="text-2xl flex-shrink-0 drop-shadow-md">{CHANNEL_ICONS[ev.channel] || '📡'}</span>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${styles.badge}`}>
+                                <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-widest ${isHighRisk ? 'bg-[#ff003c] text-white' : isWarning ? 'bg-[#ffbb00] text-black' : 'bg-[#00ff88] text-black'}`}>
                                   {ev.verdict?.replace('_', ' ')}
                                 </span>
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-gray-500 font-mono tracking-tight uppercase">
                                   {CHANNEL_NAMES[ev.channel] || ev.channel}
                                 </span>
-                                <span className="text-xs text-gray-600">{timeAgo(ev.timestamp)}</span>
+                                <span className="text-xs text-gray-600 font-mono">{timeAgo(ev.timestamp)}</span>
                               </div>
-                              <p className="text-sm text-gray-300 truncate">{ev.input_preview || ev.explanation}</p>
+                              <p className="text-sm text-gray-200 truncate font-mono mt-1">{ev.input_preview || ev.explanation}</p>
                               {ev.explanation && (
-                                <p className="text-xs text-gray-500 mt-1 line-clamp-2">{ev.explanation}</p>
+                                <p className="text-xs text-gray-400 mt-1 line-clamp-2 italic border-l-2 border-gray-700 pl-2">{ev.explanation}</p>
                               )}
                             </div>
                           </div>
                           <div className="flex-shrink-0 text-right">
-                            <div className={`text-2xl font-bold font-display ${styles.text}`}>{ev.risk_score}</div>
-                            <div className="text-[10px] text-gray-500">/100</div>
+                            <div className={`text-3xl font-bold font-display ${textGlow}`}>{ev.risk_score}</div>
+                            <div className="text-[10px] text-gray-500 font-mono">/ 100 RISK</div>
                           </div>
                         </div>
                       </div>

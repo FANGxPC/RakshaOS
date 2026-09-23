@@ -128,16 +128,17 @@ export default function AndroidCompanion() {
 
   if (isBlocked) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center p-6 text-center text-white" style={{ fontFamily: "'Inter', 'Roboto', sans-serif" }}>
-        <div className="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mb-6 animate-pulse shadow-[0_0_50px_rgba(239,68,68,0.3)]">
-           <svg className="w-12 h-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="min-h-screen bg-[#050508] flex flex-col items-center justify-center p-6 text-center text-white" style={{ fontFamily: "'Inter', 'Roboto', sans-serif" }}>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,0,60,0.15)_0%,rgba(5,5,8,1)_70%)] pointer-events-none"></div>
+        <div className="relative z-10 w-32 h-32 bg-[#ff003c]/20 rounded-full flex items-center justify-center mb-8 animate-pulse shadow-[0_0_80px_rgba(255,0,60,0.4)] border border-[#ff003c]/50">
+           <svg className="w-16 h-16 text-[#ff003c] drop-shadow-[0_0_15px_rgba(255,0,60,0.8)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
            </svg>
         </div>
-        <h1 className="text-3xl font-bold mb-4 tracking-tight">Connection Blocked</h1>
-        <p className="text-gray-400 mb-8 max-w-sm text-lg leading-relaxed">RakshaOS intercepted a malicious link attempting to steal your data or money.</p>
-        <button className="px-8 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all font-semibold active:scale-95" onClick={() => window.close()}>
-          Close Tab
+        <h1 className="relative z-10 text-4xl font-black mb-4 tracking-tighter text-[#ff003c] uppercase drop-shadow-[0_0_10px_rgba(255,0,60,0.5)]">Connection Terminated</h1>
+        <p className="relative z-10 text-gray-400 mb-8 max-w-sm text-lg leading-relaxed font-mono">RakshaOS intercepted a malicious payload attempting to execute on your device.</p>
+        <button className="relative z-10 px-10 py-4 bg-transparent border-2 border-[#ff003c] text-[#ff003c] hover:bg-[#ff003c] hover:text-white rounded-lg transition-all font-bold tracking-widest uppercase shadow-[0_0_20px_rgba(255,0,60,0.2)] hover:shadow-[0_0_30px_rgba(255,0,60,0.6)]" onClick={() => window.close()}>
+          Close Tab & Destroy Instance
         </button>
       </div>
     );
@@ -145,18 +146,19 @@ export default function AndroidCompanion() {
 
   if (isScanning) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex flex-col items-center justify-center p-6 text-center text-white" style={{ fontFamily: "'Inter', 'Roboto', sans-serif" }}>
-        <div className="relative w-28 h-28 mb-8">
-           <div className="absolute inset-0 rounded-full border-4 border-blue-500/20 shadow-[0_0_40px_rgba(59,130,246,0.3)]"></div>
-           <div className="absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+      <div className="min-h-screen bg-[#050508] flex flex-col items-center justify-center p-6 text-center text-white" style={{ fontFamily: "'Inter', 'Roboto', sans-serif" }}>
+        <div className="relative w-32 h-32 mb-8">
+           <div className="absolute inset-0 rounded-full border-4 border-[#00f0ff]/20 shadow-[0_0_40px_rgba(0,240,255,0.2)]"></div>
+           <div className="absolute inset-0 rounded-full border-4 border-[#00f0ff] border-t-transparent animate-spin" style={{ animationDuration: '1.5s' }}></div>
+           <div className="absolute inset-4 rounded-full border-2 border-[#0055ff]/40 border-b-[#0055ff] animate-[spin_2s_reverse_infinite]"></div>
            <div className="absolute inset-0 flex items-center justify-center">
-             <svg className="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+             <svg className="w-10 h-10 text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.8)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
              </svg>
            </div>
         </div>
-        <h1 className="text-3xl font-bold mb-4 tracking-tight">RakshaOS Pre-Scan</h1>
-        <p className="text-gray-400 mb-8 max-w-sm text-lg leading-relaxed animate-pulse">Analyzing intent and destination payload...</p>
+        <h1 className="text-3xl font-black mb-4 tracking-tighter uppercase text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]">RakshaOS Active Scan</h1>
+        <p className="text-[#00f0ff]/70 mb-8 max-w-sm text-sm font-mono tracking-wider animate-pulse">Analyzing intent payload trajectory...</p>
       </div>
     );
   }
