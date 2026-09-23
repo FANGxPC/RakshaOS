@@ -260,7 +260,7 @@ export default function Home() {
                       <span className="text-xl">{CHANNEL_ICONS[ch] || '📡'}</span>
                       <span className="text-sm font-medium text-[#515A6B]">{CHANNEL_NAMES[ch] || ch}</span>
                     </div>
-                    <div className={`w-3 h-3 rounded-full ${active ? 'bg-[#4C7A5E]' : 'bg-[#E5E1D8]'}`}></div>
+                    <div className={`w-3 h-3 rounded-full ${active ? 'signal-active' : 'bg-[#E5E1D8]'}`}></div>
                   </div>
                 ))}
               </div>
@@ -272,7 +272,7 @@ export default function Home() {
           <div className="lg:col-span-3">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-[#1E2433] flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#B23A2E] animate-pulse"></span>
+                <span className="w-2.5 h-2.5 rounded-full signal-danger"></span>
                 Live Event Feed
               </h2>
               <span className="text-sm text-[#687080]">{events.length} events logged</span>
