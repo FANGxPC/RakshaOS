@@ -27,7 +27,7 @@ class LLMClient:
                     model=self.model_name,
                     input=prompt
                 ),
-                timeout=30.0
+                timeout=60.0
             )
             
             try:
@@ -46,7 +46,7 @@ class LLMClient:
                 return self._fallback_response()
                 
         except Exception as e:
-            logger.error(f"LLM API call failed: {repr(e)}")
+            logger.exception(f"LLM API call failed with exception: {repr(e)}")
             return self._fallback_response()
 
     def _fallback_response(self) -> dict:
@@ -76,5 +76,5 @@ class LLMClient:
             )
             return interaction.output_text
         except Exception as e:
-            logger.error(f"LLM text generation failed: {str(e)}")
+            logger.exception(f"LLM text generation failed with exception: {repr(e)}")
             return f"An error occurred while generating text: {str(e)}"
