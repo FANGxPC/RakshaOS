@@ -12,7 +12,7 @@ class LLMClient:
         if not api_key:
             logger.warning("GEMINI_API_KEY is not set. LLM calls will fail.")
         self.client = genai.Client(api_key=api_key) if api_key else None
-        self.model_name = "gemini-3.8-flash"
+        self.model_name = "gemini-3.5-flash"
 
     async def analyze(self, prompt: str) -> dict:
         if not self.client:
