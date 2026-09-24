@@ -81,6 +81,8 @@ graph TD
 ### Prerequisites
 - Node.js (v18+)
 - Python (3.9+)
+- **Android Studio & AVD (Android Virtual Device)**: Required to test the live SMS interception. Ensure an emulator is running.
+- **Telegram Account**: To create and test the Telegram bot sync.
 
 ### 1. Clone the repository
 ```bash
@@ -88,24 +90,41 @@ git clone https://github.com/your-username/RakshaOS.git
 cd RakshaOS
 ```
 
-### 2. Start the Platform (Recommended for Judges)
-RakshaOS includes an automated startup script that handles all environment setup, dependency installation (frontend, backend & monitors), and service launching.
+### 2. Setup Environment Variables & Telegram Bot
+Before running the platform, you need to create a Telegram bot and get your API keys:
+1. Open Telegram and search for `@BotFather`.
+2. Send `/newbot`, follow the prompts, and copy the **Bot Token**.
+3. (Optional) Get your Telegram Chat ID if you want direct push alerts.
+
+Create a `.env` file in the root directory:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+TELEGRAM_CHAT_ID=your_telegram_chat_id_here
+```
+
+### 3. Start the Platform
+RakshaOS includes an automated startup script that handles dependency installation (frontend, backend & monitors) and service launching. 
+
+Make sure your **Android Emulator (AVD) is actively running**, then execute the launcher:
 
 ```bash
-# Make the launcher executable
 chmod +x start_rakshaos.sh
-
-# Run the launcher
 ./start_rakshaos.sh
 ```
 
 **What the script does automatically:**
-1. Generates a `.env` file (you will need to paste your `GEMINI_API_KEY` and Telegram credentials into it).
-2. Creates a Python virtual environment and installs backend dependencies.
-3. Installs Node.js dependencies for both the Next.js frontend and WhatsApp monitor.
-4. Boots up the FastAPI backend, Next.js Command Center, and ADB monitors in the background.
+1. Installs Python backend dependencies and boots the FastAPI & Telegram bot.
+2. Installs Node.js dependencies for the Next.js frontend and boots the Command Center.
+3. Installs dependencies for the WhatsApp monitor.
+4. Starts the ADB monitor in the background.
 
-Once the script finishes booting all services, access the web application at `http://localhost:3000`.
+### 4. Test the Interceptors
+- **Command Center:** Access the dashboard at `http://localhost:3000`.
+- **Live SMS Interception:** Open the Extended Controls (three dots) in your Android Emulator, navigate to **Phone**, and send a mock SMS to the emulator. It will automatically intercept.
+- **WhatsApp Sync:** Check the terminal output where you ran the start script. A QR code will appear. Scan it with your WhatsApp (Linked Devices) to start live message monitoring.
+- **Telegram Bot:** Send a suspicious message (e.g., "Your bank account is blocked, click here to update KYC") directly to your newly created Telegram Bot. It will instantly reply with a risk analysis!
+
 To stop all services, simply press `Ctrl+C` in the terminal.
 
 ---
