@@ -256,21 +256,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Channel Status */}
-            <div className="border border-[#D9D5CC] bg-white/55 p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#1E2433] mb-5">Active Channels</h3>
-              <div className="space-y-4">
-                {Object.entries(channels).map(([ch, active]) => (
-                  <div key={ch} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl">{CHANNEL_ICONS[ch] || '📡'}</span>
-                      <span className="text-sm font-medium text-[#515A6B]">{CHANNEL_NAMES[ch] || ch}</span>
-                    </div>
-                    <div className={`w-3 h-3 rounded-full ${active ? 'bg-[#4C7A5E] animate-pulse shadow-[0_0_8px_rgba(76,122,94,0.8)]' : 'bg-[#E5E1D8]'}`}></div>
-                  </div>
-                ))}
-              </div>
-            </div>
+
 
           </div>
 
