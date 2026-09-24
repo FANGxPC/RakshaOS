@@ -25,24 +25,28 @@ class LLMClient:
             interaction = await asyncio.wait_for(
                 self.client.aio.interactions.create(
                     model=self.model_name,
-                    input=prompt,
-                    response_format={
-                        "type": "text",
-                        "mime_type": "application/json"
-                    }
+                    input=prompt
                 ),
-                timeout=8.0
+                timeout=30.0
             )
             
             try:
-                result = json.loads(interaction.output_text)
+                text = interaction.output_text.strip()
+                if text.startswith("```json"):
+                    text = text[7:]
+                elif text.startswith("```"):
+                    text = text[3:]
+                if text.endswith("```"):
+                    text = text[:-3]
+                
+                result = json.loads(text.strip())
                 return result
             except json.JSONDecodeError:
                 logger.error(f"Failed to parse JSON from LLM response: {interaction.output_text}")
                 return self._fallback_response()
                 
         except Exception as e:
-            logger.error(f"LLM API call failed: {str(e)}")
+            logger.error(f"LLM API call failed: {repr(e)}")
             return self._fallback_response()
 
     def _fallback_response(self) -> dict:
@@ -68,7 +72,7 @@ class LLMClient:
                     model=self.model_name,
                     input=prompt,
                 ),
-                timeout=8.0
+                timeout=30.0
             )
             return interaction.output_text
         except Exception as e:
