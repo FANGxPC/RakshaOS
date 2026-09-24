@@ -73,7 +73,6 @@ graph TD
 - `backend/` - Python API for handling OCR, QR decoding, and LLM reasoning.
 - `android-app/` & `android-monitor/` - Android specific implementations for on-device safety.
 - `whatsapp-monitor/` - WhatsApp integration layer.
-- `docs/` & `demo/` - Project documentation and demo assets.
 
 ---
 
@@ -89,25 +88,25 @@ git clone https://github.com/your-username/RakshaOS.git
 cd RakshaOS
 ```
 
-### 2. Setup the Backend
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-pip install -r requirements.txt
+### 2. Start the Platform (Recommended for Judges)
+RakshaOS includes an automated startup script that handles all environment setup, dependency installation (frontend, backend & monitors), and service launching.
 
-# Create a .env file based on the provided template and add your API keys.
-# Run the backend server
-python main.py  # or uvicorn main:app --reload depending on framework setup
+```bash
+# Make the launcher executable
+chmod +x start_rakshaos.sh
+
+# Run the launcher
+./start_rakshaos.sh
 ```
 
-### 3. Setup the Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Access the web application at `http://localhost:3000`.
+**What the script does automatically:**
+1. Generates a `.env` file (you will need to paste your `GEMINI_API_KEY` and Telegram credentials into it).
+2. Creates a Python virtual environment and installs backend dependencies.
+3. Installs Node.js dependencies for both the Next.js frontend and WhatsApp monitor.
+4. Boots up the FastAPI backend, Next.js Command Center, and ADB monitors in the background.
+
+Once the script finishes booting all services, access the web application at `http://localhost:3000`.
+To stop all services, simply press `Ctrl+C` in the terminal.
 
 ---
 
