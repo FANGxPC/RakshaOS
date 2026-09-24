@@ -10,6 +10,8 @@
 
 </div>
 
+**[🎥 Watch the RakshaOS Demo on YouTube](https://youtu.be/uT6rZPi5amk)**
+
 > RakshaOS is an AI-powered digital safety layer that understands what a user is being *asked to do* — not just what they're receiving — and detects scams, fraud, manipulation, and risky digital actions before they cause financial or personal harm.
 
 ---
@@ -44,6 +46,20 @@ By analyzing *behavioral signatures* (urgency + authority impersonation + paymen
 - 🔗 **QR Code Decoder**: safely extracts and checks URLs behind QR codes against heuristics.
 - 🚑 **Recovery Mode**: An "I already paid" flow that generates a pre-filled complaint draft and evidence checklist to boost recovery rates.
 - 🗣️ **Multilingual Support**: Simplified explanations designed for elderly and low-literacy users.
+
+---
+
+## 📸 Screenshots
+
+Here are some screenshots of RakshaOS in action:
+
+| RakshaOS Command Center | Live Threat Detection & Analysis |
+|:---:|:---:|
+| <img src="./screenshots/Screenshot%20from%202026-09-24%2016-13-34.png" width="100%" alt="RakshaOS Command Center" /> | <img src="./screenshots/Screenshot%20from%202026-09-24%2016-13-44.png" width="100%" alt="Live Threat Detection & Analysis" /> |
+| **Family Shield Alert Notification** | **Detailed Risk Analysis & Signals** |
+| <img src="./screenshots/Screenshot%20from%202026-09-24%2016-13-49.png" width="100%" alt="Family Shield Alert Notification" /> | <img src="./screenshots/Screenshot%20from%202026-09-24%2016-14-04.png" width="100%" alt="Detailed Risk Analysis & Signals" /> |
+| **Safety Scan Progress** | **Recovery Mode & Complaint Draft** |
+| <img src="./screenshots/Screenshot%20from%202026-09-24%2016-14-09.png" width="100%" alt="Safety Scan Progress" /> | <img src="./screenshots/Screenshot%20from%202026-09-24%2016-14-21.png" width="100%" alt="Recovery Mode & Complaint Draft" /> |
 
 ---
 
